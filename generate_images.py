@@ -15,7 +15,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from style_preset import build_prompt, sanitize_filename
+from style_preset import build_prompt_fallback, sanitize_filename
+from prompt_llm import build_prompt_llm
 
 try:
     from dotenv import load_dotenv
@@ -27,8 +28,13 @@ MODEL_MAP = {
     "flash": "gemini-2.5-flash-image",
     "pro": "gemini-3-pro-image-preview",
 }
+TEXT_MODEL_MAP = {
+    "flash": "gemini-2.5-flash",
+    "pro": "gemini-2.5-pro",
+}
 
-MAX_RETRIES = 2  # additional attempts after the first try
+MAX_RETRIES = 2  # additional attempts after the first try, for image generation
+PROMPT_MAX_RETRIES = 1  # additional attempts after the first try, for LLM prompt generation
 RETRY_BACKOFF_SECONDS = 2  # doubles each retry: 2s, 4s
 
 
@@ -81,6 +87,30 @@ def build_client():
 
     from google import genai
     return genai.Client(api_key=api_key)
+
+
+def build_prompt_with_retries(
+    client, text_model, line, shot_number, total_shots, all_shots, recent_prompts,
+    aspect, retry_hint, log_path,
+):
+    """Try the LLM-based, style-guide-aware prompt generator; fall back to
+    the offline rule-based builder if it fails after retries."""
+    attempt = 0
+    while attempt <= PROMPT_MAX_RETRIES:
+        try:
+            return build_prompt_llm(
+                client, text_model, line, shot_number, total_shots, all_shots,
+                recent_prompts, aspect=aspect, retry_hint=retry_hint,
+            )
+        except Exception as exc:
+            attempt += 1
+            log_error(log_path, f"shot {shot_number:03d} prompt generation attempt {attempt} failed: {exc}")
+            if attempt > PROMPT_MAX_RETRIES:
+                break
+            time.sleep(RETRY_BACKOFF_SECONDS)
+
+    log_error(log_path, f"shot {shot_number:03d}: falling back to rule-based prompt")
+    return build_prompt_fallback(line, aspect=aspect, shot_number=shot_number)
 
 
 def generate_image(client, model_name, prompt, reference_images, out_path: Path):
@@ -156,9 +186,15 @@ def parse_args():
     parser.add_argument("--references", default="references", help="Folder with reference images")
     parser.add_argument("--start", type=int, default=None, help="First shot number to generate (1-indexed)")
     parser.add_argument("--end", type=int, default=None, help="Last shot number to generate (inclusive)")
-    parser.add_argument("--model", default="flash", help="'flash', 'pro', or a raw Gemini model id")
+    parser.add_argument("--model", default="flash", help="'flash', 'pro', or a raw Gemini image model id")
+    parser.add_argument("--text-model", default=None, help="Gemini text model for prompt writing (defaults to a match for --model)")
     parser.add_argument("--aspect", default="16:9", help="Aspect ratio hint, e.g. 16:9")
     parser.add_argument("--dry-run", action="store_true", help="Print prompts without generating images")
+    parser.add_argument(
+        "--rule-based", action="store_true",
+        help="Skip the LLM prompt writer and use the offline heuristic prompt builder "
+             "(no API calls at all in combination with --dry-run)",
+    )
     return parser.parse_args()
 
 
@@ -177,6 +213,7 @@ def main():
     csv_path = output_dir / "shots.csv"
 
     model_name = MODEL_MAP.get(args.model, args.model)
+    text_model_name = args.text_model or TEXT_MODEL_MAP.get(args.model, "gemini-2.5-flash")
 
     all_shots = read_script_lines(script_path)
     if not all_shots:
@@ -195,23 +232,39 @@ def main():
     if reference_images:
         print(f"Using {len(reference_images)} reference image(s) from {args.references}/")
 
-    client = None if args.dry_run else build_client()
+    # A client is needed for image generation (unless --dry-run) and for the
+    # LLM prompt writer (unless --rule-based), even during a dry run.
+    need_client = (not args.dry_run) or (not args.rule_based)
+    client = build_client() if need_client else None
 
     existing_rows = load_existing_shots(csv_path)
 
     total = len(selected_shots)
-    print(f"Generating {total} shot(s) [{start}-{end}] with model '{model_name}'"
-          f"{' (dry run)' if args.dry_run else ''}")
+    mode_note = " (dry run)" if args.dry_run else ""
+    mode_note += " (rule-based prompts)" if args.rule_based else " (LLM-guided prompts)"
+    print(f"Generating {total} shot(s) [{start}-{end}] with model '{model_name}'{mode_note}")
+
+    recent_prompts = []
 
     for i, (shot_number, line) in enumerate(selected_shots, start=1):
-        prompt = build_prompt(line, aspect=args.aspect, shot_number=shot_number)
+        retry_hint = existing_rows.get(shot_number, {}).get("status") == "failed"
+
+        if args.rule_based:
+            prompt = build_prompt_fallback(line, aspect=args.aspect, shot_number=shot_number)
+        else:
+            prompt = build_prompt_with_retries(
+                client, text_model_name, line, shot_number, len(all_shots), all_shots,
+                recent_prompts, args.aspect, retry_hint, log_path,
+            )
+        recent_prompts.append(prompt)
+
         filename = f"{shot_number:03d}_{sanitize_filename(line)}.png"
         out_path = output_dir / filename
 
         print(f"[{i}/{total}] shot {shot_number:03d}: {line}")
 
         if args.dry_run:
-            print(f"  prompt: {prompt}")
+            print(f"  prompt ({len(prompt.split())} words): {prompt}")
             status = "dry-run"
         else:
             success = generate_with_retries(
