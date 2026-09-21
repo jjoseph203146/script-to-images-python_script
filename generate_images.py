@@ -29,8 +29,8 @@ MODEL_MAP = {
     "pro": "gemini-3-pro-image-preview",
 }
 TEXT_MODEL_MAP = {
-    "flash": "gemini-2.5-flash",
-    "pro": "gemini-2.5-pro",
+    "flash": "gemini-3.6-flash",
+    "pro": "gemini-3.1-pro-preview",
 }
 
 MAX_RETRIES = 2  # additional attempts after the first try, for image generation
