@@ -204,7 +204,7 @@ def main():
           f"{' (dry run)' if args.dry_run else ''}")
 
     for i, (shot_number, line) in enumerate(selected_shots, start=1):
-        prompt = build_prompt(line, aspect=args.aspect)
+        prompt = build_prompt(line, aspect=args.aspect, shot_number=shot_number)
         filename = f"{shot_number:03d}_{sanitize_filename(line)}.png"
         out_path = output_dir / filename
 

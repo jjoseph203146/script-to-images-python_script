@@ -7,9 +7,16 @@ channel's recurring visual identity, but works for any script.
 ## What it does
 
 - Reads `script.txt`, one narration line per line (blank lines are skipped).
-- Builds a short image prompt per line: narration + the channel's style preset
-  (extra tennis-court geometry is only added when a line mentions the court,
-  serving, rallies, etc.).
+- Builds a ~75-150 word image prompt per line: the narration rewritten in
+  faceless third person, a location, a camera angle, lighting, and a short
+  atmosphere/background note — all pulled from the same consistent character
+  and art-direction description. Camera angle, framing, and location vary
+  from shot to shot (no two shots in a row repeat the same pick) so the
+  finished video doesn't look like the same bench or baseline over and over.
+- Detailed multi-player court geometry (baseline positions, net, ball
+  trajectory) is only added when a line implies a second player or a rally
+  (mentions of an opponent, a return, a rally, etc.); simple single-character
+  lines stay concise and don't get court-geometry detail they don't need.
 - Optionally feeds in reference images from a `references/` folder so Gemini
   stays consistent with your character design.
 - Generates one image per line with Google Gemini and saves them as
@@ -99,8 +106,9 @@ calls for something else:
 - simplified athletic body
 - not realistic, no logos, no watermark
 
-See `style_preset.py` to tune the preset or the keyword list that triggers
-extra court-geometry detail.
+See `style_preset.py` to tune the preset, the location/camera/lighting
+variety pools, or the keyword list that triggers the multi-player
+court-geometry detail.
 
 ## Notes
 
