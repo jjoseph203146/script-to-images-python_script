@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+output/*.png
+output/shots.csv
+output/errors.log
+!output/.gitkeep
