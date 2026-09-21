@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F0F3F7;font-family:"Instrument Sans",system-ui,sans-serif;color:#0D1B2E}
+a{color:#0D1B2E;text-decoration:underline;text-decoration-color:#E4DCCB;text-underline-offset:3px}
+a:hover{color:#16294A;text-decoration-color:#16294A}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(13,27,46,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}
+.dv-tid{font:600 10px "IBM Plex Mono",monospace;padding:3px 7px;background:#0D1B2E;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 "Instrument Sans",system-ui,sans-serif;color:#0D1B2E}
+.dv-tsub{margin:0 0 22px;max-width:760px;font:400 12.5px/1.6 "Instrument Sans",system-ui,sans-serif;color:#5B6B82}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px "IBM Plex Mono",monospace;padding:3px 7px;background:rgba(13,27,46,.08);color:#0D1B2E;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;max-width:560px;font:400 11.5px/1.45 "Instrument Sans",system-ui,sans-serif;color:#5B6B82}
+.dv-card{max-width:100%;background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:12px;box-shadow:0 8px 30px rgba(13,27,46,.07);overflow:hidden}
+.dv-opt:target .dv-oid{background:#16294A;color:#fff}
+.dv-next{margin:26px 0 0;font:400 12px/1.6 "Instrument Sans",system-ui,sans-serif;color:#5B6B82}
+@keyframes stiPulse{0%,100%{opacity:1}50%{opacity:.55}}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Two-pane console, built on the real repo — grid-dominant, click a frame to reroll it</span></div>
+<p class="dv-tsub">Grounded in <code style="font-family:'IBM Plex Mono',monospace;font-size:11.5px">script-to-images-python_script</code>: real flags, the real model map (flash → gemini-2.5-flash-image + gemini-3.6-flash, pro → gemini-3-pro-image-preview + gemini-3.1-pro-preview), real <code style="font-family:'IBM Plex Mono',monospace;font-size:11.5px">shots.csv</code> columns, the real 14 reference photos, and the real Beyond the Baseline UTR script. Filenames and prompt text are generated in the browser by the same rules as <code style="font-family:'IBM Plex Mono',monospace;font-size:11.5px">sanitize_filename</code> and <code style="font-family:'IBM Plex Mono',monospace;font-size:11.5px">build_prompt_fallback</code> — so they are what the tool would actually write. 200-shot script, mid-run. <strong style="color:#0D1B2E;font-weight:600">Click any finished frame in <a class="dv-oid" href="#2a">2a</a> to reroll it.</strong></p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>The main screen. Setup pinned left, the run owns the right — but the grid dominates it: the per-shot stream collapses into a 200-cell status ribbon plus a one-line ticker, so 200 frames stay on screen instead of a log you scroll past. Live.</div>
+<div class="dv-card" data-screen-label="2a Console" style="width:1380px">
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 22px;height:54px;background:#0D1B2E;color:#fff">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font:600 13px 'IBM Plex Mono',monospace">script_to_images</span>
+<span style="padding:3px 8px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.7)">LOCAL · 127.0.0.1:5000</span>
+<span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:rgba(255,255,255,.55)">Beyond the Baseline</span>
+</div>
+<div style="display:flex;align-items:center;gap:18px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.72)">
+<span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:999px;background:#F0EBE1;display:inline-block;animation:stiPulse 1.4s ease-in-out infinite"></span>SSE /stream</span>
+<span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:999px;background:#2F9969;display:inline-block"></span>GEMINI_API_KEY in session</span>
+</div>
+</div>
+
+<div style="display:flex;align-items:stretch">
+
+<div style="flex:none;width:372px;border-right:1px solid rgba(13,27,46,.10);background:#fff;padding:20px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box">
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">SCRIPT</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">200 shots</span></div>
+<div style="border:1px solid rgba(13,27,46,.14);border-radius:12px;overflow:hidden">
+<div style="padding:11px 13px;font:400 11.5px/1.85 'IBM Plex Mono',monospace;color:#5B6B82">You open your phone.<br>There's a number beside your name.<br>At first, it feels like just another statistic.<br><span style="color:#B9C4D2">…197 more lines</span></div>
+<div style="display:flex;gap:6px;padding:8px 10px;border-top:1px solid rgba(13,27,46,.08);background:#F6F9FC">
+<button style="padding:6px 12px;background:#fff;border:1px solid rgba(13,27,46,.16);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F0EBE1">Paste / edit</button>
+<button style="padding:6px 12px;background:transparent;border:1px solid transparent;border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="border-color:rgba(13,27,46,.14)">Upload .txt</button>
+<span style="margin-left:auto;align-self:center;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">script.txt</span>
+</div>
+</div>
+<span style="font:400 10.5px/1.45 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">Blank lines skipped. Shot numbers run over the whole script, so a partial range keeps the same numbering.</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">REFERENCE PHOTOS</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">14 attached</span></div>
+<div style="display:grid;grid-template-columns:repeat(8,1fr);gap:5px">
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></div>
+<div style="aspect-ratio:1;border-radius:6px;border:1px dashed rgba(13,27,46,.26);background:#F6F9FC;display:flex;align-items:center;justify-content:center;cursor:copy" style-hover="border-color:#16294A;background:#EAF0F7"><span style="font:400 14px/1 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">+</span></div>
+</div>
+<span style="font:400 10.5px/1.45 'IBM Plex Mono',monospace;color:#8C9AB0">reference_photos/Gemini_Generated_Image_*.jpg · 7.6 MB · attached to every call</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">SETTINGS</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--model</span><span style="position:relative;display:block"><select style="width:100%;appearance:none;-webkit-appearance:none;padding:9px 26px 9px 11px;font:400 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box;cursor:pointer"><option>flash</option><option>pro</option></select><svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="position:absolute;right:10px;top:50%;margin-top:-3px;pointer-events:none"><path d="M1 1l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--aspect</span><span style="position:relative;display:block"><select style="width:100%;appearance:none;-webkit-appearance:none;padding:9px 26px 9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box;cursor:pointer"><option>16:9</option><option>9:16</option><option>1:1</option><option>4:3</option></select><svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="position:absolute;right:10px;top:50%;margin-top:-3px;pointer-events:none"><path d="M1 1l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg></span></label>
+</div>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--text-model</span><input type="text" placeholder="auto — gemini-3.6-flash" style="width:100%;padding:9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--start</span><input type="text" placeholder="1" style="width:100%;padding:9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--end</span><input type="text" placeholder="200" style="width:100%;padding:9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--output</span><input type="text" value="output" style="width:100%;padding:9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#F6F9FC;border:1px solid rgba(13,27,46,.14);border-radius:10px;box-sizing:border-box"></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">--references</span><input type="text" value="reference_photos" style="width:100%;padding:9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#F6F9FC;border:1px solid rgba(13,27,46,.14);border-radius:10px;box-sizing:border-box"></label>
+</div>
+<label style="display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid rgba(13,27,46,.10);border-radius:10px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<span style="flex:none;position:relative;width:34px;height:19px;border-radius:999px;background:#EAF0F7;border:1px solid rgba(13,27,46,.12)"><span style="position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:999px;background:#fff;border:1px solid rgba(13,27,46,.14)"></span></span>
+<span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">--dry-run</span><span style="margin-left:auto;font:400 10.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">real prompts, no images</span></label>
+<label style="display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid rgba(13,27,46,.10);border-radius:10px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<span style="flex:none;position:relative;width:34px;height:19px;border-radius:999px;background:#EAF0F7;border:1px solid rgba(13,27,46,.12)"><span style="position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:999px;background:#fff;border:1px solid rgba(13,27,46,.14)"></span></span>
+<span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">--rule-based</span><span style="margin-left:auto;font:400 10.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">offline, no LLM</span></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#5B6B82">GEMINI_API_KEY</span>
+<input type="password" value="AIzaSyD8kQ2mXvR7pLnT4wYbC9" style="width:100%;padding:9px 11px;font:400 12.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#0D1B2E;background:#F6F9FC;border:1px solid rgba(13,27,46,.14);border-radius:10px;box-sizing:border-box">
+<span style="font:400 10.5px/1.45 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">Session memory only — never written to disk, never in errors.log.</span></label>
+</div>
+
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid rgba(13,27,46,.08)">
+<button style="width:100%;padding:12px;background:#FBF1F0;color:#D6584A;border:1px solid rgba(214,88,74,.35);border-radius:999px;font:500 13.5px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#D6584A;color:#fff;border-color:#D6584A">Stop after current shot</button>
+<span style="text-align:center;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">shots.csv is rewritten when the run ends</span>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;background:#F6F9FC;display:flex;flex-direction:column">
+
+<div style="padding:18px 22px 16px;background:#fff;border-bottom:1px solid rgba(13,27,46,.10)">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:13px">
+<div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+<span style="width:8px;height:8px;border-radius:999px;background:#0D1B2E;display:inline-block;animation:stiPulse 1.4s ease-in-out infinite"></span>
+<span style="font:600 21px 'Instrument Sans',system-ui,sans-serif;letter-spacing:-.015em">Shot {{ activeNnn }} of {{ total }}</span>
+</div>
+<span style="font:400 12px 'IBM Plex Mono',monospace;color:#5B6B82">gemini-2.5-flash-image · 16:9 · 14 refs · 2 retries (2s, 4s backoff)</span>
+</div>
+<div style="display:flex;align-items:center;gap:24px">
+<div style="text-align:right"><div style="font:600 17px 'Instrument Sans',system-ui,sans-serif;color:#2F9969">{{ done }}</div><div style="font:400 9.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">SUCCESS</div></div>
+<div style="text-align:right"><div style="font:600 17px 'Instrument Sans',system-ui,sans-serif;color:#D6584A">{{ failed }}</div><div style="font:400 9.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">FAILED</div></div>
+<div style="text-align:right"><div style="font:600 17px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">{{ remaining }}</div><div style="font:400 9.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">QUEUED</div></div>
+</div>
+</div>
+<div style="display:flex;gap:1px;height:12px;border-radius:3px;overflow:hidden;background:#EAF0F7">
+<sc-for list="{{ shots }}" as="s" hint-placeholder-count="200">
+<sc-if value="{{ s.isSuccess }}" hint-placeholder-val="{{ true }}"><span style="flex:1;min-width:0;background:#0D1B2E"></span></sc-if>
+<sc-if value="{{ s.isFailed }}" hint-placeholder-val="{{ false }}"><span style="flex:1;min-width:0;background:#D6584A"></span></sc-if>
+<sc-if value="{{ s.isActive }}" hint-placeholder-val="{{ false }}"><span style="flex:1;min-width:0;background:#F0EBE1"></span></sc-if>
+<sc-if value="{{ s.isPending }}" hint-placeholder-val="{{ false }}"><span style="flex:1;min-width:0;background:#DCE5EF"></span></sc-if>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:12px;margin-top:11px;padding:9px 13px;background:#F6F9FC;border-radius:10px">
+<span style="flex:none;font:500 11.5px 'IBM Plex Mono',monospace;color:#0D1B2E">{{ activeNnn }}</span>
+<span style="flex:1;min-width:0;font:400 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ activeLine }}</span>
+<span style="flex:none;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">{{ activeFile }}</span>
+<span style="flex:none;display:flex;align-items:center;gap:7px;padding:4px 11px;background:#0D1B2E;border-radius:999px;font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#fff">GENERATING</span>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 22px;border-bottom:1px solid rgba(13,27,46,.08)">
+<div style="display:flex;align-items:baseline;gap:12px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">OUTPUT/</span>
+<span style="font:400 12px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Click a finished frame to reroll it · {{ rerollNote }}</span>
+</div>
+<div style="display:flex gap:6px;display:flex;gap:6px">
+<button style="padding:6px 12px;background:#F0EBE1;border:1px solid #E4DCCB;border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer">All {{ total }}</button>
+<button style="padding:6px 12px;background:transparent;border:1px solid rgba(13,27,46,.14);border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E">Done {{ done }}</button>
+<button style="padding:6px 12px;background:transparent;border:1px solid rgba(13,27,46,.14);border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E">Failed {{ failed }}</button>
+</div>
+</div>
+
+<div style="position:relative;padding:18px 22px;max-height:600px;overflow:auto">
+<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:14px 12px">
+<sc-for list="{{ shots }}" as="s" hint-placeholder-count="48">
+<div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+<sc-if value="{{ s.isSuccess }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ s.onClick }}" title="{{ s.title }}" style="position:relative;aspect-ratio:16/9;border-radius:7px;border:1px solid rgba(13,27,46,.12);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px);cursor:pointer" style-hover="border-color:#0D1B2E;background:#EAF0F7">
+<span style="position:absolute;top:4px;left:4px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 8.5px 'IBM Plex Mono',monospace;color:#0D1B2E">{{ s.nnn }}</span>
+<sc-if value="{{ s.rerolled }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;bottom:4px;right:4px;padding:1px 6px;background:#F0EBE1;border:1px solid #E4DCCB;border-radius:999px;font:500 8px 'IBM Plex Mono',monospace;color:#0D1B2E">v{{ s.versions }}</span></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ s.isRerolling }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;aspect-ratio:16/9;border-radius:7px;border:1px solid #0D1B2E;background:#0D1B2E;display:flex;align-items:center;justify-content:center;animation:stiPulse 1.1s ease-in-out infinite">
+<span style="font:500 8px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#F0EBE1">REROLLING</span>
+<span style="position:absolute;top:4px;left:4px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 8.5px 'IBM Plex Mono',monospace;color:#0D1B2E">{{ s.nnn }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ s.isRunning }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;aspect-ratio:16/9;border-radius:7px;border:1px solid #0D1B2E;background:#EAF0F7;display:flex;align-items:center;justify-content:center;animation:stiPulse 1.1s ease-in-out infinite">
+<span style="font:500 8px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#0D1B2E">GENERATING</span>
+<span style="position:absolute;top:4px;left:4px;padding:1px 6px;background:#0D1B2E;border-radius:999px;font:500 8.5px 'IBM Plex Mono',monospace;color:#fff">{{ s.nnn }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ s.isFailed }}" hint-placeholder-val="{{ false }}">
+<div title="{{ s.line }}" style="position:relative;aspect-ratio:16/9;border-radius:7px;border:1px solid rgba(214,88,74,.45);background:#FBF1F0;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:#D6584A">
+<span style="font:500 8px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#D6584A">RETRY</span>
+<span style="position:absolute;top:4px;left:4px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 8.5px 'IBM Plex Mono',monospace;color:#0D1B2E">{{ s.nnn }}</span>
+</div>
+</sc-if>
+<sc-if value="{{ s.isQueued }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;aspect-ratio:16/9;border-radius:7px;border:1px dashed rgba(13,27,46,.18);background:#FBFCFE">
+<span style="position:absolute;top:4px;left:4px;font:400 8.5px 'IBM Plex Mono',monospace;color:#B9C4D2">{{ s.nnn }}</span>
+</div>
+</sc-if>
+<div style="font:400 8px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.caption }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:14px;padding:14px 22px;background:#fff;border-top:1px solid rgba(13,27,46,.10)">
+<button style="padding:6px 13px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 11.5px 'IBM Plex Mono',monospace;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E;background:#F6F9FC">output/errors.log · 5</button>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">{{ done }} PNGs + shots.csv on disk</span>
+<div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+<span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">zips what's finished, run keeps going</span>
+<button style="padding:10px 20px;background:#0D1B2E;color:#fff;border:none;border-radius:999px;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#16294A">Download all (.zip)</button>
+</div>
+</div>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:sticky;bottom:0;display:flex;justify-content:center;padding:0 22px 16px;pointer-events:none">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 18px;background:#0D1B2E;border-radius:999px;box-shadow:0 16px 48px rgba(13,27,46,.22)">
+<span style="width:6px;height:6px;border-radius:999px;background:#F0EBE1;display:inline-block"></span>
+<span style="font:400 12.5px 'Instrument Sans',system-ui,sans-serif;color:#fff">{{ toast }}</span>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2b">
+<div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Download All — the zip confirmation you asked for. It names exactly what goes in the archive, and is honest that the run is still going, so you know what you are and aren't getting.</div>
+<div class="dv-card" data-screen-label="2b Zip confirmation" style="width:620px">
+<div style="padding:26px 26px 22px;background:#fff">
+<div style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0;margin-bottom:10px">DOWNLOAD ALL</div>
+<h2 style="margin:0 0 8px;font:600 24px/1.2 'Instrument Sans',system-ui,sans-serif;letter-spacing:-.02em">Zip everything in output/</h2>
+<p style="margin:0 0 20px;font:400 13.5px/1.6 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Your browser will ask where to save it. Filenames keep their <code style="font-family:'IBM Plex Mono',monospace;font-size:12px">NNN_slug.png</code> order, so the archive drops straight into a timeline.</p>
+
+<div style="border:1px solid rgba(13,27,46,.12);border-radius:12px;overflow:hidden;margin-bottom:18px">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 15px;border-bottom:1px solid rgba(13,27,46,.08)">
+<span style="flex:1;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">46 × NNN_slug.png</span>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">64.2 MB</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 15px;border-bottom:1px solid rgba(13,27,46,.08)">
+<span style="flex:1;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">shots.csv</span>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">all 200 rows · 38 KB</span>
+</div>
+<label style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:#F6F9FC;cursor:pointer">
+<span style="flex:none;position:relative;width:16px;height:16px;border-radius:5px;background:#0D1B2E;border:1px solid #0D1B2E"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" style="position:absolute;top:4px;left:3px"><path d="M1 3.2L3.1 5.4 8 1" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="flex:1;font:400 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">errors.log</span>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">5 entries · 2 KB</span>
+</label>
+</div>
+
+<div style="display:flex;gap:12px;padding:13px 15px;background:#F0EBE1;border:1px solid #E4DCCB;border-radius:12px;margin-bottom:20px">
+<span style="flex:none;width:6px;border-radius:999px;background:#0D1B2E"></span>
+<div>
+<div style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;margin-bottom:3px">The run is still going — 153 shots left.</div>
+<div style="font:400 12px/1.5 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">This archive is a snapshot of the 46 frames finished so far. Zipping does not pause or slow generation.</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:10px">
+<button style="padding:12px 24px;background:#0D1B2E;color:#fff;border:none;border-radius:999px;font:500 14px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#16294A">Save output.zip — 66.2 MB</button>
+<button style="padding:12px 20px;background:transparent;color:#0D1B2E;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 13.5px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#F6F9FC">Wait for the run to finish</button>
+<button style="margin-left:auto;padding:12px 14px;background:transparent;color:#5B6B82;border:none;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="color:#0D1B2E">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2c">
+<div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Click-to-reroll, up close — and the one thing it needs from the backend. A reroll re-calls the prompt writer (temperature 0.9, so a genuinely different prompt) and rewrites the same <code style="font-family:'IBM Plex Mono',monospace;font-size:11px">NNN_slug.png</code>. Keeping the old frame as <code style="font-family:'IBM Plex Mono',monospace;font-size:11px">.v1.png</code> is a small addition to the pipeline — worth it, because otherwise one stray click destroys a frame you liked.</div>
+<div class="dv-card" data-screen-label="2c Reroll detail" style="width:620px">
+<div style="padding:24px;background:#F6F9FC;display:flex;flex-direction:column;gap:18px">
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:1px solid rgba(13,27,46,.12);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px);position:relative"><span style="position:absolute;top:5px;left:5px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">041</span></div>
+<span style="font:400 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">REST</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:1px solid #0D1B2E;background:#EAF0F7;position:relative;display:flex;align-items:flex-end;padding:6px;box-sizing:border-box"><span style="font:500 9px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">click to reroll</span><span style="position:absolute;top:5px;left:5px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">042</span></div>
+<span style="font:400 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#0D1B2E">HOVER</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:1px solid #0D1B2E;background:#0D1B2E;position:relative;display:flex;align-items:center;justify-content:center;animation:stiPulse 1.1s ease-in-out infinite"><span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#F0EBE1">REROLLING</span><span style="position:absolute;top:5px;left:5px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">042</span></div>
+<span style="font:400 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#0D1B2E">IN FLIGHT</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:1px solid rgba(13,27,46,.12);background:repeating-linear-gradient(135deg,#E1E9F2 0 6px,#EFF3F8 6px 12px);position:relative"><span style="position:absolute;top:5px;left:5px;padding:1px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">042</span><span style="position:absolute;bottom:5px;right:5px;padding:1px 6px;background:#F0EBE1;border:1px solid #E4DCCB;border-radius:999px;font:500 8.5px 'IBM Plex Mono',monospace">v2</span></div>
+<span style="font:400 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">NEW FRAME</span>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:12px;padding:16px 18px">
+<div style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.13em;color:#8C9AB0;margin-bottom:9px">VERSIONS FOR SHOT 042</div>
+<div style="display:flex;gap:10px;margin-bottom:14px">
+<div style="flex:1;display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:1px solid rgba(13,27,46,.12);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"></div>
+<span style="font:400 9.5px 'IBM Plex Mono',monospace;color:#8C9AB0">v1 · 09:41:02</span>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:2px solid #0D1B2E;background:repeating-linear-gradient(135deg,#E1E9F2 0 6px,#EFF3F8 6px 12px)"></div>
+<span style="font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E">v2 · current</span>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:6px">
+<div style="aspect-ratio:16/9;border-radius:8px;border:1px dashed rgba(13,27,46,.22);background:#F6F9FC;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:#0D1B2E"><span style="font:500 9.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">roll again</span></div>
+<span style="font:400 9.5px 'IBM Plex Mono',monospace;color:#B9C4D2">v3</span>
+</div>
+</div>
+<p style="margin:0 0 12px;padding:11px 13px;background:#F6F9FC;border-radius:9px;font:400 11px/1.65 'IBM Plex Mono',monospace;color:#5B6B82">Same Beyond the Baseline white circular-head character, minimalist flat 2D cartoon style, 16:9. At UTR 4, the warm-up tells the player how the match ends, in a stadium tunnel leading toward the court entrance. Leaning forward slightly with a focused posture… <span style="color:#0D1B2E">v2 prompt — regenerated, not reused.</span></p>
+<div style="display:flex;gap:8px;align-items:center">
+<button style="padding:8px 14px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F6F9FC">Keep v1 instead</button>
+<button style="padding:8px 14px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F6F9FC">Edit prompt, then roll</button>
+<span style="margin-left:auto;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">shots.csv row 42 updated</span>
+</div>
+</div>
+
+<div style="background:#0D1B2E;border-radius:12px;padding:16px 18px">
+<div style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.13em;color:rgba(255,255,255,.45);margin-bottom:9px">OUTPUT/ERRORS.LOG — SURFACED, NOT HIDDEN</div>
+<div style="font:400 10.5px/1.9 'IBM Plex Mono',monospace;color:rgba(255,255,255,.78)">
+<div>[2026-09-21 09:31:14] 022_practice_at_utr_2_starts_looking.png: attempt 1 failed: 429 RESOURCE_EXHAUSTED</div>
+<div>[2026-09-21 09:31:18] 022_practice_at_utr_2_starts_looking.png: attempt 2 failed: 429 RESOURCE_EXHAUSTED</div>
+<div style="color:#F2A69C">[2026-09-21 09:31:26] 022_practice_at_utr_2_starts_looking.png: attempt 3 failed: 429 RESOURCE_EXHAUSTED</div>
+<div>[2026-09-21 09:36:02] shot 038 prompt generation attempt 1 failed: DeadlineExceeded</div>
+<div style="color:#F0EBE1">[2026-09-21 09:36:05] shot 038: falling back to rule-based prompt</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "make the ribbon clickable so it jumps the grid to that shot" · "add a range-select so I can reroll shots 40–60 in one go" · "show the empty first-run state with no script and no key"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">script_to_images — local web UI, three shells + two detail studies</span></div>
+<p class="dv-tsub">Built on the Luminate system (Instrument Sans / IBM Plex Mono, navy on blue-grey, cream accent, pill actions). Every control maps 1:1 to an existing CLI flag — nothing here implies new pipeline behaviour. Striped blocks are image placeholders for the real generated PNGs. No design system or codebase was attached, so shots.csv columns and log formats are my best guess from your brief — flag anything off.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Single scrolling page — numbered steps down the page, results at the bottom. The by-the-book version: obvious on first run, a lot of scrolling on the hundredth. Shown finished, 59 of 62 succeeded.</div>
+<div class="dv-card" data-screen-label="1a Single page" style="width:1100px">
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:#0D1B2E;color:#fff">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font:600 13px 'IBM Plex Mono',monospace;letter-spacing:-.01em">script_to_images</span>
+<span style="padding:3px 8px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.7)">LOCAL · 127.0.0.1:5000</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.72)">
+<span style="width:6px;height:6px;border-radius:999px;background:#2F9969;display:inline-block"></span>GEMINI_API_KEY loaded · session only
+</div>
+</div>
+
+<div style="padding:44px 0 52px;background:#F6F9FC">
+<div style="max-width:840px;margin:0 auto;padding:0 32px;display:flex;flex-direction:column;gap:36px">
+
+<div>
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0;margin-bottom:14px">NARRATION IN, SHOTS OUT</div>
+<h1 style="margin:0 0 10px;font:600 38px/1.12 'Instrument Sans',system-ui,sans-serif;letter-spacing:-.02em">One image for every line you wrote.</h1>
+<p style="margin:0;max-width:560px;font:400 15px/1.6 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Same pipeline as the command line — same prompts, same retries, same shot numbering. This just saves you the terminal.</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">01 — SCRIPT</span><span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">one narration line per row</span></div>
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:14px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(13,27,46,.08)">
+<div style="display:flex;gap:4px">
+<button style="padding:7px 14px;background:#F0EBE1;border:1px solid #E4DCCB;border-radius:999px;font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer">Paste text</button>
+<button style="padding:7px 14px;background:transparent;border:1px solid transparent;border-radius:999px;font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="border-color:rgba(13,27,46,.14)">Upload script.txt</button>
+</div>
+<span style="font:400 11px 'IBM Plex Mono',monospace;color:#8C9AB0">loaded from script.txt · 4.2 KB</span>
+</div>
+<div style="padding:16px 18px;font:400 13.5px/2.05 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;max-height:206px;overflow:hidden">
+<div>You open your phone before your feet hit the floor.</div>
+<div>The screen lights up, and the day already belongs to someone else.</div>
+<div>A thousand small decisions get made for you before breakfast.</div>
+<div>The coffee goes cold somewhere behind you.</div>
+<div style="color:#5B6B82">Somewhere a server hums, quietly counting your seconds.</div>
+<div style="color:#8C9AB0">You put the phone face down on the table.</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid rgba(13,27,46,.08);background:#F6F9FC">
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#5B6B82">62 non-empty lines → 62 shots</span>
+<span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">Blank lines are skipped, numbering follows the full script</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">02 — REFERENCE PHOTOS</span><span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">attached to every generation call</span></div>
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:14px;padding:16px;display:flex;gap:10px;align-items:stretch">
+<div style="flex:none;width:96px;height:96px;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:flex-end;padding:7px;box-sizing:border-box"><span style="font:400 9px 'IBM Plex Mono',monospace;color:#8C9AB0">grade_01.jpg</span></div>
+<div style="flex:none;width:96px;height:96px;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:flex-end;padding:7px;box-sizing:border-box"><span style="font:400 9px 'IBM Plex Mono',monospace;color:#8C9AB0">grade_02.jpg</span></div>
+<div style="flex:none;width:96px;height:96px;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:flex-end;padding:7px;box-sizing:border-box"><span style="font:400 9px 'IBM Plex Mono',monospace;color:#8C9AB0">interior.png</span></div>
+<div style="flex:none;width:96px;height:96px;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:flex-end;padding:7px;box-sizing:border-box"><span style="font:400 9px 'IBM Plex Mono',monospace;color:#8C9AB0">hands.png</span></div>
+<div style="flex:1;min-width:0;border-radius:10px;border:1px dashed rgba(13,27,46,.26);background:#F6F9FC;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:copy" style-hover="border-color:#16294A;background:#EAF0F7">
+<span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">Drop images, or choose files</span>
+<span style="font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">saves into reference_photos/ · 4 present</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">03 — SETTINGS</span><span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">these are the CLI flags, nothing more</span></div>
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:14px;padding:22px">
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Model <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">--model</span></span>
+<span style="position:relative;display:block"><select style="width:100%;appearance:none;-webkit-appearance:none;padding:10px 32px 10px 12px;font:400 13.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box;cursor:pointer"><option>flash</option><option>pro</option></select><svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="position:absolute;right:12px;top:50%;margin-top:-3px;pointer-events:none"><path d="M1 1l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Aspect <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">--aspect</span></span>
+<span style="position:relative;display:block"><select style="width:100%;appearance:none;-webkit-appearance:none;padding:10px 32px 10px 12px;font:400 13.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box;cursor:pointer"><option>16:9</option><option>9:16</option><option>1:1</option><option>4:3</option></select><svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="position:absolute;right:12px;top:50%;margin-top:-3px;pointer-events:none"><path d="M1 1l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Start shot <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">--start</span></span>
+<input type="text" placeholder="1" style="width:100%;padding:10px 12px;font:400 13.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">End shot <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">--end</span></span>
+<input type="text" placeholder="62" style="width:100%;padding:10px 12px;font:400 13.5px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(13,27,46,.08)">
+<label style="display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1px solid rgba(13,27,46,.10);border-radius:12px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<span style="flex:none;position:relative;width:36px;height:20px;border-radius:999px;background:#EAF0F7;border:1px solid rgba(13,27,46,.12);margin-top:1px"><span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:999px;background:#fff;border:1px solid rgba(13,27,46,.14)"></span></span>
+<span style="display:flex;flex-direction:column;gap:3px"><span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Dry run <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">--dry-run</span></span><span style="font:400 11.5px/1.45 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Write prompts and shots.csv, generate no images. No spend.</span></span></label>
+<label style="display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1px solid rgba(13,27,46,.10);border-radius:12px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<span style="flex:none;position:relative;width:36px;height:20px;border-radius:999px;background:#EAF0F7;border:1px solid rgba(13,27,46,.12);margin-top:1px"><span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:999px;background:#fff;border:1px solid rgba(13,27,46,.14)"></span></span>
+<span style="display:flex;flex-direction:column;gap:3px"><span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Rule-based prompts <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">--rule-based</span></span><span style="font:400 11.5px/1.45 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Offline heuristic builder from style_preset.py. No LLM call.</span></span></label>
+</div>
+
+<label style="display:flex;flex-direction:column;gap:6px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(13,27,46,.08)">
+<span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">API key <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8C9AB0">GEMINI_API_KEY</span></span>
+<span style="display:flex;gap:10px;align-items:center">
+<input type="password" value="AIzaSyD8kQ2mXvR7pLnT4wYbC9" style="flex:1;padding:10px 12px;font:400 13.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box">
+<button style="flex:none;padding:10px 16px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#EAF0F7">Show</button>
+</span>
+<span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Held in memory for this browser session. Never written to disk, never logged.</span>
+</label>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:#0D1B2E;border-radius:14px">
+<button style="flex:none;display:inline-flex;align-items:center;gap:9px;padding:13px 26px;background:#fff;color:#0D1B2E;border:none;border-radius:999px;font:500 14.5px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#F0EBE1">Generate 62 images</button>
+<button style="flex:none;padding:13px 22px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:999px;font:500 14px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:rgba(255,255,255,.08)">Dry run first</button>
+<div style="margin-left:auto;text-align:right;font:400 11.5px/1.6 'IBM Plex Mono',monospace;color:rgba(255,255,255,.6)">gemini-2.5-flash-image · 16:9 · 2 retries<br>writes into output/ · overwrites matching NNN_ files</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">04 — RESULTS</span><span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">shots.csv is the source of truth</span></div>
+<button style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#0D1B2E;color:#fff;border:none;border-radius:999px;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#16294A">Download all (.zip)</button>
+</div>
+
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:14px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:20px;padding:16px 20px;border-bottom:1px solid rgba(13,27,46,.08)">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font:600 19px 'Instrument Sans',system-ui,sans-serif;letter-spacing:-.01em">62 of 62</span><span style="font:400 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">SHOTS ATTEMPTED</span></div>
+<div style="width:1px;height:34px;background:rgba(13,27,46,.10)"></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:7px;font:600 19px 'Instrument Sans',system-ui,sans-serif;color:#2F9969"><span style="width:7px;height:7px;border-radius:999px;background:#2F9969"></span>59</span><span style="font:400 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">SUCCESS</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:7px;font:600 19px 'Instrument Sans',system-ui,sans-serif;color:#D6584A"><span style="width:7px;height:7px;border-radius:999px;background:#D6584A"></span>3</span><span style="font:400 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">FAILED</span></div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+<button style="padding:9px 16px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F6F9FC">Retry 3 failed</button>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">4m 18s</span>
+</div>
+</div>
+<div style="padding:20px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 16px">
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center;cursor:zoom-in" style-hover="border-color:rgba(13,27,46,.40)">
+<span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>001</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">001_you_open_your_phone.png</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center;cursor:zoom-in" style-hover="border-color:rgba(13,27,46,.40)">
+<span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>002</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">002_the_screen_lights_up.png</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid #0D1B2E;background:#0D1B2E;display:flex;align-items:flex-end;padding:10px;box-sizing:border-box;cursor:zoom-in">
+<span style="font:400 9.5px/1.5 'IBM Plex Mono',monospace;color:rgba(255,255,255,.82)">Wide 16:9 cinematic still, cool desaturated grade, overcast window light. A thousand paper slips on a kitchen table…</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>003</span>
+<span style="position:absolute;top:7px;right:7px;padding:3px 7px;background:#F0EBE1;border-radius:999px;font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#0D1B2E">HOVER</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">003_a_thousand_small_decisions.png</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center;cursor:zoom-in" style-hover="border-color:rgba(13,27,46,.40)">
+<span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>004</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">004_the_coffee_goes_cold.png</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center;cursor:zoom-in" style-hover="border-color:rgba(13,27,46,.40)">
+<span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>005</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">005_somewhere_a_server_hums.png</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center;cursor:zoom-in" style-hover="border-color:rgba(13,27,46,.40)">
+<span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>006</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">006_you_put_the_phone_face_down.png</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(214,88,74,.45);background:#FBF1F0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer" style-hover="border-color:#D6584A">
+<span style="font:500 10.5px 'Instrument Sans',system-ui,sans-serif;color:#D6584A">Failed after 2 retries</span>
+<span style="font:400 9.5px 'IBM Plex Mono',monospace;color:#5B6B82">RESOURCE_EXHAUSTED · 429</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#D6584A"></span>007</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">007_the_window_is_grey.png — not written</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="position:relative;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center;cursor:zoom-in" style-hover="border-color:rgba(13,27,46,.40)">
+<span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME</span>
+<span style="position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:5px;padding:3px 8px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9.5px 'IBM Plex Mono',monospace;color:#0D1B2E"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>008</span>
+</div>
+<div style="font:400 10px/1.35 'IBM Plex Mono',monospace;color:#5B6B82;word-break:break-all">008_you_notice_your_hands.png</div>
+</div>
+
+</div>
+<div style="display:flex;align-items:center;justify-content:center;padding:0 20px 20px"><button style="padding:9px 18px;background:#F6F9FC;border:1px solid rgba(13,27,46,.14);border-radius:999px;font:500 12.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E;border-color:rgba(13,27,46,.28)">Show remaining 54 shots</button></div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:15px 20px;background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:14px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<div style="display:flex;align-items:center;gap:11px">
+<svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1.5l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg>
+<span style="font:500 13px 'IBM Plex Mono',monospace">output/errors.log</span>
+<span style="padding:3px 9px;background:#FBF1F0;border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;color:#D6584A">4 entries</span>
+</div>
+<span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">last written 09:16:41</span>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Two-pane console — setup pinned left, the run owns the right. Settings stay reachable mid-run, and the grid fills in live underneath the stream. My recommendation for a tool you'll open every week. Shown mid-generation.</div>
+<div class="dv-card" data-screen-label="1b Two-pane console" style="width:1320px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:#0D1B2E;color:#fff">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font:600 13px 'IBM Plex Mono',monospace">script_to_images</span>
+<span style="padding:3px 8px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.7)">LOCAL · 127.0.0.1:5000</span>
+</div>
+<div style="display:flex;align-items:center;gap:18px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.72)">
+<span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:999px;background:#F0EBE1;display:inline-block"></span>SSE connected</span>
+<span style="display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:999px;background:#2F9969;display:inline-block"></span>key in session</span>
+</div>
+</div>
+
+<div style="display:flex;align-items:stretch;min-height:760px">
+
+<div style="flex:none;width:392px;border-right:1px solid rgba(13,27,46,.10);background:#fff;padding:22px;display:flex;flex-direction:column;gap:20px;box-sizing:border-box">
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">SCRIPT</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">62 lines</span></div>
+<div style="border:1px solid rgba(13,27,46,.14);border-radius:12px;overflow:hidden">
+<div style="padding:12px 14px;font:400 12px/1.85 'IBM Plex Mono',monospace;color:#5B6B82;max-height:112px;overflow:hidden">You open your phone before your feet hit the floor.<br>The screen lights up, and the day already belongs to someone else.<br>A thousand small decisions get made for you before breakfast.</div>
+<div style="display:flex;gap:6px;padding:9px 10px;border-top:1px solid rgba(13,27,46,.08);background:#F6F9FC">
+<button style="padding:6px 12px;background:#fff;border:1px solid rgba(13,27,46,.16);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer">Edit</button>
+<button style="padding:6px 12px;background:transparent;border:1px solid transparent;border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="border-color:rgba(13,27,46,.14)">Replace file</button>
+<span style="margin-left:auto;align-self:center;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">script.txt</span>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">REFERENCE PHOTOS</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">4 attached</span></div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px">
+<div style="aspect-ratio:1;border-radius:8px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"></div>
+<div style="aspect-ratio:1;border-radius:8px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"></div>
+<div style="aspect-ratio:1;border-radius:8px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"></div>
+<div style="aspect-ratio:1;border-radius:8px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"></div>
+<div style="aspect-ratio:1;border-radius:8px;border:1px dashed rgba(13,27,46,.26);background:#F6F9FC;display:flex;align-items:center;justify-content:center;cursor:copy" style-hover="border-color:#16294A"><span style="font:400 16px/1 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">+</span></div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:11px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">SETTINGS</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">--model</span><span style="position:relative;display:block"><select style="width:100%;appearance:none;-webkit-appearance:none;padding:9px 28px 9px 11px;font:400 13px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box;cursor:pointer"><option>flash</option><option>pro</option></select><svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="position:absolute;right:11px;top:50%;margin-top:-3px;pointer-events:none"><path d="M1 1l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">--aspect</span><span style="position:relative;display:block"><select style="width:100%;appearance:none;-webkit-appearance:none;padding:9px 28px 9px 11px;font:400 13px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box;cursor:pointer"><option>16:9</option><option>9:16</option><option>1:1</option></select><svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="position:absolute;right:11px;top:50%;margin-top:-3px;pointer-events:none"><path d="M1 1l4 4 4-4" stroke="#5B6B82" stroke-width="1.5" stroke-linecap="round"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">--start</span><input type="text" placeholder="1" style="width:100%;padding:9px 11px;font:400 13px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">--end</span><input type="text" placeholder="62" style="width:100%;padding:9px 11px;font:400 13px 'IBM Plex Mono',monospace;color:#0D1B2E;background:#fff;border:1px solid rgba(13,27,46,.18);border-radius:10px;box-sizing:border-box"></label>
+</div>
+<label style="display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid rgba(13,27,46,.10);border-radius:10px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<span style="flex:none;position:relative;width:34px;height:19px;border-radius:999px;background:#EAF0F7;border:1px solid rgba(13,27,46,.12)"><span style="position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:999px;background:#fff;border:1px solid rgba(13,27,46,.14)"></span></span>
+<span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Dry run</span><span style="margin-left:auto;font:400 10.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">prompts only</span></label>
+<label style="display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid rgba(13,27,46,.10);border-radius:10px;cursor:pointer" style-hover="border-color:rgba(13,27,46,.24)">
+<span style="flex:none;position:relative;width:34px;height:19px;border-radius:999px;background:#EAF0F7;border:1px solid rgba(13,27,46,.12)"><span style="position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:999px;background:#fff;border:1px solid rgba(13,27,46,.14)"></span></span>
+<span style="font:500 12.5px 'Instrument Sans',system-ui,sans-serif">Rule-based</span><span style="margin-left:auto;font:400 10.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">no LLM</span></label>
+<label style="display:flex;flex-direction:column;gap:5px"><span style="font:400 11px 'IBM Plex Mono',monospace;color:#5B6B82">GEMINI_API_KEY</span>
+<input type="password" value="AIzaSyD8kQ2mXvR7pLnT4wYbC9" style="width:100%;padding:9px 11px;font:400 13px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#0D1B2E;background:#F6F9FC;border:1px solid rgba(13,27,46,.14);border-radius:10px;box-sizing:border-box">
+<span style="font:400 10.5px/1.45 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">Session memory only — never written to disk.</span></label>
+</div>
+
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:9px;padding-top:18px;border-top:1px solid rgba(13,27,46,.08)">
+<button style="width:100%;padding:13px;background:#FBF1F0;color:#D6584A;border:1px solid rgba(214,88,74,.35);border-radius:999px;font:500 14px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#D6584A;color:#fff;border-color:#D6584A">Stop after current shot</button>
+<span style="text-align:center;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">settings apply to the next run</span>
+</div>
+</div>
+
+<div style="flex:1;min-width:0;background:#F6F9FC;display:flex;flex-direction:column">
+
+<div style="padding:22px 26px;background:#fff;border-bottom:1px solid rgba(13,27,46,.10)">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px">
+<div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">
+<span style="width:8px;height:8px;border-radius:999px;background:#0D1B2E;display:inline-block"></span>
+<span style="font:600 22px 'Instrument Sans',system-ui,sans-serif;letter-spacing:-.015em">Generating shot 24 of 62</span>
+</div>
+<span style="font:400 12.5px 'IBM Plex Mono',monospace;color:#5B6B82">gemini-2.5-flash-image · 16:9 · 4 reference photos attached</span>
+</div>
+<div style="display:flex;align-items:center;gap:26px">
+<div style="text-align:right"><div style="font:600 17px 'Instrument Sans',system-ui,sans-serif;color:#2F9969">22</div><div style="font:400 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">SUCCESS</div></div>
+<div style="text-align:right"><div style="font:600 17px 'Instrument Sans',system-ui,sans-serif;color:#D6584A">1</div><div style="font:400 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">FAILED</div></div>
+<div style="text-align:right"><div style="font:600 17px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">~2m 40s</div><div style="font:400 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8C9AB0">REMAINING</div></div>
+</div>
+</div>
+<div style="height:6px;border-radius:999px;background:#EAF0F7;overflow:hidden;display:flex">
+<span style="width:35.5%;background:#0D1B2E"></span><span style="width:1.6%;background:#D6584A"></span><span style="width:1.6%;background:#F0EBE1"></span>
+</div>
+</div>
+
+<div style="padding:20px 26px;display:flex;flex-direction:column;gap:9px;border-bottom:1px solid rgba(13,27,46,.08)">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">LIVE STREAM</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#8C9AB0">newest first</span></div>
+
+<div style="display:flex;align-items:center;gap:14px;padding:13px 16px;background:#fff;border:1px solid #0D1B2E;border-radius:12px">
+<span style="flex:none;font:500 13px 'IBM Plex Mono',monospace;color:#0D1B2E">024</span>
+<span style="flex:1;min-width:0;font:400 13.5px 'Instrument Sans',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">The bus passes and you do not look up from the screen.</span>
+<span style="flex:none;display:flex;align-items:center;gap:7px;padding:5px 12px;background:#0D1B2E;border-radius:999px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#fff">GENERATING</span>
+<span style="flex:none;width:60px;text-align:right;font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">3.1s</span>
+</div>
+
+<div style="display:flex;align-items:center;gap:14px;padding:13px 16px;background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:12px">
+<span style="flex:none;font:500 13px 'IBM Plex Mono',monospace;color:#5B6B82">023</span>
+<span style="flex:1;min-width:0;font:400 13.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Someone has already decided what you will want next.</span>
+<span style="flex:none;display:flex;align-items:center;gap:7px;padding:5px 12px;background:#EFF8F3;border-radius:999px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#24784F"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>WRITTEN</span>
+<span style="flex:none;width:60px;text-align:right;font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">6.4s</span>
+</div>
+
+<div style="display:flex;align-items:center;gap:14px;padding:13px 16px;background:#fff;border:1px solid rgba(214,88,74,.35);border-radius:12px">
+<span style="flex:none;font:500 13px 'IBM Plex Mono',monospace;color:#5B6B82">022</span>
+<span style="flex:1;min-width:0;font:400 13.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">The notification was not for you, exactly.</span>
+<span style="flex:none;font:400 11px 'IBM Plex Mono',monospace;color:#D6584A">retry 2/2 · 429</span>
+<span style="flex:none;display:flex;align-items:center;gap:7px;padding:5px 12px;background:#FBF1F0;border-radius:999px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#B8453A"><span style="width:5px;height:5px;border-radius:999px;background:#D6584A"></span>FAILED</span>
+<span style="flex:none;width:60px;text-align:right;font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">18.2s</span>
+</div>
+
+<div style="display:flex;align-items:center;gap:14px;padding:13px 16px;background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:12px;opacity:.72">
+<span style="flex:none;font:500 13px 'IBM Plex Mono',monospace;color:#5B6B82">021</span>
+<span style="flex:1;min-width:0;font:400 13.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">You are holding it closer than you were a minute ago.</span>
+<span style="flex:none;display:flex;align-items:center;gap:7px;padding:5px 12px;background:#EFF8F3;border-radius:999px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#24784F"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>WRITTEN</span>
+<span style="flex:none;width:60px;text-align:right;font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">5.8s</span>
+</div>
+</div>
+
+<div style="padding:20px 26px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8C9AB0">OUTPUT/</span><span style="font:400 11.5px 'Instrument Sans',system-ui,sans-serif;color:#8C9AB0">22 PNGs + shots.csv so far</span></div>
+<div style="display:flex;gap:9px">
+<button style="padding:8px 15px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 12px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E;background:#fff">errors.log · 3</button>
+<button style="padding:8px 15px;background:#0D1B2E;color:#fff;border:none;border-radius:999px;font:500 12px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#16294A">Download all (.zip)</button>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px 11px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">001</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">001_you_open_your…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">002</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">002_the_screen_li…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">003</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">003_a_thousand_s…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">004</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">004_the_coffee_g…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">005</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">005_somewhere_a…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">006</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">006_you_put_the…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">018</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">018_the_room_is…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">019</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">019_a_light_turns…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">020</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">020_nobody_answ…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">021</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">021_you_are_hold…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(214,88,74,.40);background:#FBF1F0;display:flex;align-items:center;justify-content:center"><span style="font:500 9.5px 'IBM Plex Mono',monospace;color:#D6584A">FAILED</span><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">022</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">not written</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 6px,#F6F9FC 6px 12px)"><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:rgba(255,255,255,.94);border-radius:999px;font:500 9px 'IBM Plex Mono',monospace">023</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#8C9AB0;word-break:break-all">023_someone_has…</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;aspect-ratio:16/9;border-radius:9px;border:1px solid #0D1B2E;background:#EAF0F7;display:flex;align-items:center;justify-content:center"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#0D1B2E">···</span><span style="position:absolute;top:5px;left:5px;padding:2px 6px;background:#0D1B2E;border-radius:999px;font:500 9px 'IBM Plex Mono',monospace;color:#fff">024</span></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#0D1B2E">generating</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:16/9;border-radius:9px;border:1px dashed rgba(13,27,46,.18);background:#F6F9FC"></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#B9C4D2">025 queued</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:16/9;border-radius:9px;border:1px dashed rgba(13,27,46,.18);background:#F6F9FC"></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#B9C4D2">026 queued</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:16/9;border-radius:9px;border:1px dashed rgba(13,27,46,.18);background:#F6F9FC"></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#B9C4D2">027 queued</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:16/9;border-radius:9px;border:1px dashed rgba(13,27,46,.18);background:#F6F9FC"></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#B9C4D2">028 queued</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:16/9;border-radius:9px;border:1px dashed rgba(13,27,46,.18);background:#F6F9FC"></div><span style="font:400 9px/1.3 'IBM Plex Mono',monospace;color:#B9C4D2">029 queued</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Shot table — shots.csv made literal. One row per shot, thumbnail inline, prompt expandable, per-row retry, log drawer docked at the bottom. Densest and the most honest to the pipeline; the least friendly on a first run.</div>
+<div class="dv-card" data-screen-label="1c Shot table" style="width:1320px">
+<div style="display:flex;align-items:center;gap:14px;padding:0 20px;height:56px;background:#0D1B2E;color:#fff">
+<span style="font:600 13px 'IBM Plex Mono',monospace">script_to_images</span>
+<div style="display:flex;gap:7px;margin-left:10px">
+<span style="display:flex;align-items:center;gap:7px;padding:6px 12px;background:rgba(255,255,255,.08);border-radius:999px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.88)">script.txt · 62 lines</span>
+<span style="display:flex;align-items:center;gap:7px;padding:6px 12px;background:rgba(255,255,255,.08);border-radius:999px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.88)">refs · 4</span>
+<span style="display:flex;align-items:center;gap:7px;padding:6px 12px;background:rgba(255,255,255,.08);border-radius:999px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.88)">flash</span>
+<span style="display:flex;align-items:center;gap:7px;padding:6px 12px;background:rgba(255,255,255,.08);border-radius:999px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.88)">16:9</span>
+<span style="display:flex;align-items:center;gap:7px;padding:6px 12px;background:#F0EBE1;border-radius:999px;font:500 11.5px 'IBM Plex Mono',monospace;color:#0D1B2E">--start 12 --end 40</span>
+<span style="display:flex;align-items:center;gap:7px;padding:6px 12px;border:1px dashed rgba(255,255,255,.28);border-radius:999px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.55)">dry-run off</span>
+</div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+<span style="display:flex;align-items:center;gap:7px;font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.7)"><span style="width:6px;height:6px;border-radius:999px;background:#2F9969;display:inline-block"></span>key ok</span>
+<button style="padding:9px 18px;background:#fff;color:#0D1B2E;border:none;border-radius:999px;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#F0EBE1">Generate 29 shots</button>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:18px;padding:14px 20px;background:#fff;border-bottom:1px solid rgba(13,27,46,.10)">
+<span style="font:600 14px 'Instrument Sans',system-ui,sans-serif">Shot table</span>
+<span style="font:400 12px 'IBM Plex Mono',monospace;color:#8C9AB0">62 rows · numbering spans the whole script even on a partial range</span>
+<div style="margin-left:auto;display:flex;gap:6px">
+<button style="padding:7px 13px;background:#F0EBE1;border:1px solid #E4DCCB;border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer">All 62</button>
+<button style="padding:7px 13px;background:transparent;border:1px solid rgba(13,27,46,.14);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E">In range 29</button>
+<button style="padding:7px 13px;background:transparent;border:1px solid rgba(13,27,46,.14);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E">Failed 3</button>
+<button style="padding:7px 13px;background:transparent;border:1px solid rgba(13,27,46,.14);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82;cursor:pointer" style-hover="color:#0D1B2E">Not yet run 21</button>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;gap:0;padding:9px 20px;background:#F6F9FC;border-bottom:1px solid rgba(13,27,46,.08);font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.13em;color:#8C9AB0">
+<span>#</span><span>FRAME</span><span>NARRATION LINE</span><span>IMAGE PROMPT</span><span>STATUS</span><span style="text-align:right">FILE</span>
+</div>
+
+<div style="background:#fff">
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px;border-bottom:1px solid rgba(13,27,46,.06)" style-hover="background:#F6F9FC">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">012</span>
+<span style="display:block;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">The coffee goes cold somewhere behind you.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#5B6B82;display:block;max-height:34px;overflow:hidden">Wide 16:9 cinematic still, cool desaturated grade. A forgotten mug on a cluttered counter, steam long gone…</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#EFF8F3;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#24784F;justify-self:start"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>SUCCESS</span>
+<span style="text-align:right;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">012_the_coffee…</span>
+</div>
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px;border-bottom:1px solid rgba(13,27,46,.06)" style-hover="background:#F6F9FC">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">013</span>
+<span style="display:block;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">Somewhere a server hums, quietly counting your seconds.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#5B6B82;display:block;max-height:34px;overflow:hidden">Wide 16:9 cinematic still, cool desaturated grade. A dim equipment room, rack lights in shallow focus…</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#EFF8F3;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#24784F;justify-self:start"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>SUCCESS</span>
+<span style="text-align:right;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">013_somewhere…</span>
+</div>
+
+<div style="border-bottom:1px solid rgba(13,27,46,.06);background:#F6F9FC">
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">014</span>
+<span style="display:block;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px solid rgba(13,27,46,.20);background:repeating-linear-gradient(135deg,#E1E9F2 0 5px,#EFF3F8 5px 10px)"></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">You put the phone face down on the table.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#0D1B2E">expanded below</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#EFF8F3;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#24784F;justify-self:start"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>SUCCESS</span>
+<span style="text-align:right;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">014_you_put_the…</span>
+</div>
+<div style="padding:0 20px 16px 156px;display:flex;gap:18px;align-items:flex-start">
+<div style="flex:1;min-width:0;background:#fff;border:1px solid rgba(13,27,46,.12);border-radius:12px;padding:14px 16px">
+<div style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.13em;color:#8C9AB0;margin-bottom:8px">PROMPT SENT TO gemini-2.5-flash-image</div>
+<p style="margin:0;font:400 12px/1.7 'IBM Plex Mono',monospace;color:#0D1B2E">Wide 16:9 cinematic still, cool desaturated palette, soft overcast window light. A phone laid screen-down on a scuffed wooden table, one hand just leaving frame. Shallow depth of field, 35mm, muted blue-grey grade, film grain. No text, no logos, no visible UI.</p>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button style="padding:7px 13px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F6F9FC">Copy prompt</button>
+<button style="padding:7px 13px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F6F9FC">Re-run this shot</button>
+<span style="align-self:center;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">prompt source: prompt_llm.py · gemini-3.6-flash</span>
+</div>
+</div>
+<div style="flex:none;width:252px;aspect-ratio:16/9;border-radius:10px;border:1px solid rgba(13,27,46,.12);background:repeating-linear-gradient(135deg,#EAF0F7 0 7px,#F6F9FC 7px 14px);display:flex;align-items:center;justify-content:center"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#8C9AB0">AI FRAME 1920×1080</span></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px;border-bottom:1px solid rgba(13,27,46,.06);background:#FDF7F6">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">015</span>
+<span style="display:flex;align-items:center;justify-content:center;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px solid rgba(214,88,74,.40);background:#FBF1F0"><span style="font:500 9px 'IBM Plex Mono',monospace;color:#D6584A">—</span></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">The window is grey. The room is very quiet.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#D6584A;display:block">RESOURCE_EXHAUSTED (429) · gave up after 2 retries</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#FBF1F0;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#B8453A;justify-self:start"><span style="width:5px;height:5px;border-radius:999px;background:#D6584A"></span>FAILED</span>
+<span style="justify-self:end"><button style="padding:6px 12px;background:#0D1B2E;color:#fff;border:none;border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#16294A">Retry</button></span>
+</div>
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px;border-bottom:1px solid rgba(13,27,46,.06)" style-hover="background:#F6F9FC">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">016</span>
+<span style="display:block;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px solid rgba(13,27,46,.10);background:repeating-linear-gradient(135deg,#EAF0F7 0 5px,#F6F9FC 5px 10px)"></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">You notice your hands for the first time all morning.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#5B6B82;display:block;max-height:34px;overflow:hidden">Wide 16:9 cinematic still, cool desaturated grade. Two open palms on a table edge, window light raking across…</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#EFF8F3;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#24784F;justify-self:start"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>SUCCESS</span>
+<span style="text-align:right;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">016_you_notice…</span>
+</div>
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px;border-bottom:1px solid rgba(13,27,46,.06);background:#fff">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">017</span>
+<span style="display:flex;align-items:center;justify-content:center;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px solid #0D1B2E;background:#EAF0F7"><span style="font:500 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#0D1B2E">···</span></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E">Nothing happens for a while.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#5B6B82;display:block;max-height:34px;overflow:hidden">Wide 16:9 cinematic still, cool desaturated grade. An empty room held a beat too long, dust in the light…</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#0D1B2E;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#fff;justify-self:start">GENERATING</span>
+<span style="text-align:right;font:400 10.5px 'IBM Plex Mono',monospace;color:#8C9AB0">2.4s</span>
+</div>
+
+<div style="display:grid;grid-template-columns:52px 104px minmax(0,1.15fr) minmax(0,1.5fr) 128px 96px;align-items:center;gap:0;padding:11px 20px;border-bottom:1px solid rgba(13,27,46,.06);opacity:.6">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#5B6B82">018</span>
+<span style="display:block;width:88px;aspect-ratio:16/9;border-radius:6px;border:1px dashed rgba(13,27,46,.20);background:#F6F9FC"></span>
+<span style="padding-right:18px;font:400 13px/1.45 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">And that, it turns out, is the entire point.</span>
+<span style="padding-right:18px;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#8C9AB0">queued</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 11px;background:#F6F9FC;border:1px solid rgba(13,27,46,.12);border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8C9AB0;justify-self:start">QUEUED</span>
+<span style="text-align:right;font:400 10.5px 'IBM Plex Mono',monospace;color:#B9C4D2">—</span>
+</div>
+
+</div>
+
+<div style="border-top:1px solid rgba(13,27,46,.12);background:#0D1B2E;color:#fff">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.10)">
+<svg width="10" height="7" viewBox="0 0 10 7" fill="none" style="transform:rotate(180deg)"><path d="M1 1.5l4 4 4-4" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round"></path></svg>
+<span style="font:500 12.5px 'IBM Plex Mono',monospace">output/errors.log</span>
+<span style="padding:3px 9px;background:rgba(214,88,74,.22);border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;color:#F2A69C">4 entries</span>
+<div style="margin-left:auto;display:flex;gap:8px">
+<button style="padding:6px 13px;background:transparent;border:1px solid rgba(255,255,255,.24);border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;color:#fff;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">Copy log</button>
+<button style="padding:6px 13px;background:#fff;border:none;border-radius:999px;font:500 11px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F0EBE1">Download all (.zip)</button>
+</div>
+</div>
+<div style="padding:14px 20px 18px;font:400 11.5px/1.95 'IBM Plex Mono',monospace;color:rgba(255,255,255,.8)">
+<div>2026-09-21 09:14:02  shot 015  attempt 1 failed: RESOURCE_EXHAUSTED (429) — backing off 4s</div>
+<div>2026-09-21 09:14:07  shot 015  attempt 2 failed: RESOURCE_EXHAUSTED (429) — backing off 8s</div>
+<div style="color:#F2A69C">2026-09-21 09:14:16  shot 015  gave up after 2 retries, no file written</div>
+<div>2026-09-21 09:16:41  shot 038  blocked: IMAGE_SAFETY — model returned no candidates</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Dry-run review — detail study. What <code style="font-family:'IBM Plex Mono',monospace;font-size:11px">--dry-run</code> should actually feel like: read every prompt, spot the ones that will go wrong, then spend.</div>
+<div class="dv-card" data-screen-label="1d Dry run review" style="width:760px">
+<div style="display:flex;align-items:center;gap:12px;padding:16px 22px;background:#F0EBE1;border-bottom:1px solid #E4DCCB">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#0D1B2E">DRY RUN COMPLETE</span>
+<span style="font:400 12.5px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">62 prompts written to shots.csv · no images requested · $0.00 spent</span>
+</div>
+<div style="padding:22px;display:flex;flex-direction:column;gap:12px;background:#F6F9FC">
+
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:12px;padding:16px 18px">
+<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:9px">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">001</span>
+<span style="flex:1;font:500 13.5px/1.45 'Instrument Sans',system-ui,sans-serif">You open your phone before your feet hit the floor.</span>
+</div>
+<p style="margin:0;padding:11px 13px;background:#F6F9FC;border-radius:9px;font:400 11.5px/1.7 'IBM Plex Mono',monospace;color:#5B6B82">Wide 16:9 cinematic still, cool desaturated palette, soft pre-dawn window light. A hand reaching from under a duvet toward a phone on a bedside table, screen glow the only warm source. Shallow depth of field, 35mm, film grain. No text, no logos.</p>
+</div>
+
+<div style="background:#fff;border:1px solid rgba(13,27,46,.10);border-radius:12px;padding:16px 18px">
+<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:9px">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">002</span>
+<span style="flex:1;font:500 13.5px/1.45 'Instrument Sans',system-ui,sans-serif">The screen lights up, and the day already belongs to someone else.</span>
+</div>
+<p style="margin:0;padding:11px 13px;background:#F6F9FC;border-radius:9px;font:400 11.5px/1.7 'IBM Plex Mono',monospace;color:#5B6B82">Wide 16:9 cinematic still, cool desaturated palette. Close on a face lit entirely by a phone screen in a dark bedroom, eyes just opened. Shallow depth of field, 50mm, muted blue-grey grade. No text, no visible UI.</p>
+</div>
+
+<div style="background:#fff;border:1px solid rgba(214,88,74,.35);border-radius:12px;padding:16px 18px">
+<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:9px">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#0D1B2E">003</span>
+<span style="flex:1;font:500 13.5px/1.45 'Instrument Sans',system-ui,sans-serif">A thousand small decisions get made for you before breakfast.</span>
+<span style="flex:none;padding:4px 10px;background:#FBF1F0;border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;color:#B8453A">LIKELY BLOCK</span>
+</div>
+<p style="margin:0;padding:11px 13px;background:#FDF7F6;border-radius:9px;font:400 11.5px/1.7 'IBM Plex Mono',monospace;color:#5B6B82">Wide 16:9 cinematic still, cool desaturated palette. A thousand paper slips pinned across a kitchen wall, each one a decision already signed off. Overhead fluorescent, wide 24mm…</p>
+<div style="display:flex;align-items:center;gap:9px;margin-top:11px">
+<span style="font:400 11px 'Instrument Sans',system-ui,sans-serif;color:#5B6B82">Dense text-like detail often trips IMAGE_SAFETY or returns unreadable frames.</span>
+<button style="margin-left:auto;flex:none;padding:7px 13px;background:transparent;border:1px solid rgba(13,27,46,.18);border-radius:999px;font:500 11.5px 'Instrument Sans',system-ui,sans-serif;color:#0D1B2E;cursor:pointer" style-hover="background:#F6F9FC">Re-prompt shot</button>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:center;padding:4px 0"><span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#8C9AB0">59 more prompts</span></div>
+
+<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:#0D1B2E;border-radius:12px">
+<button style="padding:12px 24px;background:#fff;color:#0D1B2E;border:none;border-radius:999px;font:500 14px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#F0EBE1">Generate all 62 for real</button>
+<button style="padding:12px 20px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:999px;font:500 13.5px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:rgba(255,255,255,.08)">Download shots.csv</button>
+<span style="margin-left:auto;text-align:right;font:400 11px/1.6 'IBM Plex Mono',monospace;color:rgba(255,255,255,.6)">turns --dry-run off<br>keeps every other flag</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1e">
+<div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Full-size viewer — detail study. Click any thumbnail: the frame at size, its prompt underneath, arrow keys to walk the whole reel.</div>
+<div class="dv-card" data-screen-label="1e Viewer" style="width:900px;background:#0D1B2E">
+<div style="padding:26px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="font:500 12.5px 'IBM Plex Mono',monospace;color:#fff">004_the_coffee_goes_cold.png</span>
+<span style="display:inline-flex;align-items:center;gap:7px;padding:4px 11px;background:rgba(47,153,105,.20);border-radius:999px;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#8FD9B4"><span style="width:5px;height:5px;border-radius:999px;background:#2F9969"></span>SUCCESS</span>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.5)">1920×1080 · 1.4 MB · 6.4s · 1 attempt</span>
+<div style="margin-left:auto;display:flex;align-items:center;gap:9px">
+<button style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:999px;cursor:pointer" style-hover="background:rgba(255,255,255,.1)"><svg width="7" height="11" viewBox="0 0 7 11" fill="none"><path d="M5.5 1L1.5 5.5l4 4.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"></path></svg></button>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.6)">shot 004 / 062</span>
+<button style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:999px;cursor:pointer" style-hover="background:rgba(255,255,255,.1)"><svg width="7" height="11" viewBox="0 0 7 11" fill="none"><path d="M1.5 1l4 4.5-4 4.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"></path></svg></button>
+</div>
+</div>
+
+<div style="aspect-ratio:16/9;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:repeating-linear-gradient(135deg,#16294A 0 10px,#0F2039 10px 20px);display:flex;align-items:center;justify-content:center">
+<span style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(255,255,255,.4)">GENERATED FRAME 1920 × 1080</span>
+</div>
+
+<div style="display:flex;gap:18px;align-items:flex-start">
+<div style="flex:1;min-width:0">
+<div style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-bottom:8px">NARRATION LINE</div>
+<p style="margin:0 0 16px;font:400 15px/1.5 'Instrument Sans',system-ui,sans-serif;color:#fff">The coffee goes cold somewhere behind you.</p>
+<div style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.45);margin-bottom:8px">IMAGE PROMPT</div>
+<p style="margin:0;font:400 11.5px/1.8 'IBM Plex Mono',monospace;color:rgba(255,255,255,.72)">Wide 16:9 cinematic still, cool desaturated palette, soft overcast window light. A forgotten ceramic mug on a cluttered kitchen counter, no steam, a blurred figure turned away in the far background. Shallow depth of field, 35mm, muted blue-grey grade, fine film grain. No text, no logos.</p>
+</div>
+<div style="flex:none;width:214px;display:flex;flex-direction:column;gap:8px">
+<button style="width:100%;padding:11px;background:#fff;color:#0D1B2E;border:none;border-radius:999px;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:#F0EBE1">Reveal in folder</button>
+<button style="width:100%;padding:11px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.24);border-radius:999px;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">Re-run this shot</button>
+<button style="width:100%;padding:11px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.24);border-radius:999px;font:500 13px 'Instrument Sans',system-ui,sans-serif;cursor:pointer" style-hover="background:rgba(255,255,255,.1)">Copy prompt</button>
+<div style="margin-top:6px;padding:11px 13px;border:1px solid rgba(255,255,255,.14);border-radius:10px;font:400 10.5px/1.7 'IBM Plex Mono',monospace;color:rgba(255,255,255,.5)">refs attached: 4<br>model: gemini-2.5-flash-image<br>prompt by: gemini-3.6-flash</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "build out <a class="dv-oid" href="#1b">1b</a> as a clickable prototype with the SSE stream faked" · "take <a class="dv-oid" href="#1c">1c</a>'s shot table and drop it into <a class="dv-oid" href="#1b">1b</a>'s right pane" · "show me the empty first-run state and the zip-download moment"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;clickToReroll&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;keepPreviousVersions&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;shotCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:200,&quot;min&quot;:13,&quot;max&quot;:400,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mock data&quot;}}">
+class Component extends DCLogic {
+  state = { overrides: {}, toast: null };
+
+  CAM = ["medium over-the-shoulder camera angle","low-angle shot looking up at the character","wide establishing shot with plenty of empty space around the character","close-up framing on the character's hands and the object they're holding","side-profile medium shot","high-angle shot looking down at the character","tight framing looking down over the character's shoulder at a screen or object","medium-wide shot centered on the character"];
+  LIT = ["late-afternoon lighting","soft early-morning light","dim indoor lighting","harsh midday sun","cool blue night lighting","warm golden-hour light"];
+  ENV = ["in a quiet locker room, gear scattered on a bench","in a stadium tunnel leading toward the court entrance","in the stadium stands, empty seats around them","in a small kitchen, a racket leaning against the wall","in a parked car in a stadium lot","on a hotel room balcony overlooking distant tennis courts","at a practice wall on an empty court","in a dim bedroom at night","on a bench beside one public tennis court, tennis bag resting nearby","in an empty gym"];
+  ATM = ["Body language kept slightly tense with shoulders low, background rendered in a few flat color blocks with soft, uncluttered negative space","Weight shifted onto one foot in a relaxed stance, background kept minimal with a plain gradient sky and no extra clutter","Leaning forward slightly with a focused posture, simple flat background shapes framing the character without distracting detail","Shoulders slumped in a tired, deflated posture, background reduced to soft muted color blocks for a clean composition","Standing tall with a confident, relaxed posture, background composed of a few simple flat shapes and open negative space","One hand resting loosely at their side in a calm posture, background kept sparse with soft flat color gradients"];
+  KENV = { phone:"seated on a bench beside one public tennis court, tennis bag resting nearby", bench:"on a courtside bench, tennis bag resting nearby", practice:"at a practice wall on an empty court", coach:"at the edge of the court beside a coach", morning:"on an empty court just after sunrise", night:"on a court under stadium floodlights after dark", gym:"in a gym, weights and resistance bands nearby", car:"in a parked car, racket bag on the passenger seat" };
+
+  REAL = ["You open your phone.","There's a number beside your name.","At first, it feels like just another statistic.","Then you start checking it before matches.","You start checking it after matches.","A win feels better when the number rises.","A loss feels worse when it falls.","And eventually, that number starts changing the way you see tennis.","Because the higher it gets, the faster the game becomes.","The players get stronger.","The margins get smaller.","And every weakness becomes harder to hide.","This is your life at every UTR level."];
+  PAT = ["At UTR {n}, the ball comes back one more time than you expect.","Your serve stops being free at UTR {n}.","The person across the net at UTR {n} has a plan.","You win the first set at UTR {n} and lose the next two.","At UTR {n}, nobody gives you a short ball.","Practice at UTR {n} starts looking like work.","At UTR {n}, you learn what your forehand does under pressure.","The draw at UTR {n} has no easy rounds left.","At UTR {n}, the warm-up tells you how the match ends.","At UTR {n}, you stop counting winners and start counting errors.","Every point at UTR {n} costs you something.","At UTR {n}, the number moves slower than it used to.","This is UTR {n}."];
+
+  hash(s){ let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
+  pick(pool, salt, n, line){ return pool[this.hash(salt + ":" + n + ":" + line) % pool.length]; }
+
+  slug(text){
+    const words = text.toLowerCase().trim().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean).slice(0, 6);
+    let s = words.join("_").replace(/_+/g, "_").replace(/^_+|_+$/g, "");
+    if (!s) s = "shot";
+    return s.slice(0, 40).replace(/_+$/, "");
+  }
+
+  third(line){
+    let t = line.trim().replace(/\.$/, "");
+    t = t.replace(/\byour\b/gi, "their").replace(/\bYou\b/g, "The player").replace(/\byou\b/g, "the player");
+    const m = t.match(/the player\s+(\w+)/i);
+    if (m) {
+      const v = m[1];
+      const c = /(s|x|z|ch|sh|o)$/.test(v) ? v + "es" : (/[^aeiou]y$/.test(v) ? v.slice(0, -1) + "ies" : v + "s");
+      t = t.replace(m[0], m[0].slice(0, m[0].length - v.length) + c);
+    }
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+
+  promptFor(n, line){
+    const low = line.toLowerCase();
+    let env = null;
+    for (const k of Object.keys(this.KENV)) if (low.indexOf(k) !== -1) { env = this.KENV[k]; break; }
+    if (!env) env = this.pick(this.ENV, "env", n, line);
+    const cam = this.pick(this.CAM, "camera", n, line);
+    const props = low.indexOf("phone") !== -1 ? ", one phone" : (low.indexOf("ball") !== -1 ? ", one yellow ball" : "");
+    return "Same Beyond the Baseline white circular-head character, minimalist flat 2D cartoon style, 16:9. " +
+      this.third(line) + ", " + env + ". " + this.pick(this.ATM, "atmo", n, line) + ". " +
+      cam.charAt(0).toUpperCase() + cam.slice(1) + ", " + this.pick(this.LIT, "light", n, line) +
+      ". Character proportions, colors, and design stay identical to every other shot in this series. Exactly one person" +
+      props + ", no extra people, no realism, no logos, no watermark.";
+  }
+
+  lines(count){
+    const out = this.REAL.slice();
+    let lvl = 2;
+    while (out.length < count) {
+      for (const p of this.PAT) { if (out.length >= count) break; out.push(p.replace("{n}", String(lvl))); }
+      lvl++;
+    }
+    return out.slice(0, count);
+  }
+
+  build(){
+    const count = Math.max(13, Math.min(400, this.props.shotCount ?? 200));
+    const active = Math.min(47, count);
+    const failed = { 22: 1, 38: 1 };
+    return this.lines(count).map((line, i) => {
+      const n = i + 1;
+      const nnn = String(n).padStart(3, "0");
+      const ov = this.state.overrides[n] || {};
+      let status = ov.status;
+      if (!status) status = n < active ? (failed[n] ? "failed" : "success") : (n === active ? "running" : "queued");
+      const versions = ov.versions || 1;
+      const file = nnn + "_" + this.slug(line) + ".png";
+      return { n, nnn, line, file, versions, status,
+        prompt: this.promptFor(n, line),
+        isSuccess: status === "success", isFailed: status === "failed", isQueued: status === "queued",
+        isRunning: status === "running", isRerolling: status === "rerolling",
+        isPending: status === "queued", isActive: status === "running" || status === "rerolling",
+        rerolled: versions > 1,
+        caption: status === "success" || status === "failed" ? file : (status === "rerolling" ? "rerolling…" : (status === "running" ? "generating…" : "queued")),
+        title: status === "success" ? "Click to reroll shot " + nnn + " — " + line : line };
+    });
+  }
+
+  reroll(n){
+    const keep = this.props.keepPreviousVersions ?? true;
+    if (!(this.props.clickToReroll ?? true)) { this.setState({ toast: "Opening shot " + String(n).padStart(3, "0") + " in the full-size viewer" }); return; }
+    const cur = this.state.overrides[n] || {};
+    this.setState(s => ({ overrides: Object.assign({}, s.overrides, { [n]: { status: "rerolling", versions: cur.versions || 1 } }), toast: null }));
+    setTimeout(() => {
+      const v = (cur.versions || 1) + 1;
+      this.setState(s => ({
+        overrides: Object.assign({}, s.overrides, { [n]: { status: "success", versions: v } }),
+        toast: "Shot " + String(n).padStart(3, "0") + " rerolled — new prompt, new frame" + (keep ? " · previous kept as v" + (v - 1) : " · previous PNG overwritten")
+      }));
+      setTimeout(() => this.setState({ toast: null }), 4200);
+    }, 1700);
+  }
+
+  renderVals(){
+    const shots = this.build().map(s => Object.assign({}, s, { onClick: s.status === "success" ? () => this.reroll(s.n) : null }));
+    const done = shots.filter(s => s.status === "success").length;
+    const failed = shots.filter(s => s.status === "failed").length;
+    const active = shots.find(s => s.status === "running" || s.status === "rerolling");
+    const rolling = shots.filter(s => s.versions > 1).length;
+    return {
+      shots, done, failed, total: shots.length,
+      remaining: shots.filter(s => s.status === "queued").length,
+      activeNnn: active ? active.nnn : "—",
+      activeLine: active ? active.line : "Run complete",
+      activeFile: active ? active.file : "",
+      rerollNote: rolling === 0 ? "no rerolls yet this session" : rolling + " shot(s) rerolled this session",
+      toast: this.state.toast,
+      hasToast: !!this.state.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
