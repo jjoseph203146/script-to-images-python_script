@@ -113,7 +113,7 @@ def build_prompt_with_retries(
     return build_prompt_fallback(line, aspect=aspect, shot_number=shot_number)
 
 
-def generate_image(client, model_name, prompt, reference_images, out_path: Path):
+def generate_image(client, model_name, prompt, reference_images, out_path: Path, aspect: str = "16:9"):
     """Attempt one image generation call. Returns True on success."""
     from google.genai import types
 
@@ -127,7 +127,10 @@ def generate_image(client, model_name, prompt, reference_images, out_path: Path)
     response = client.models.generate_content(
         model=model_name,
         contents=contents,
-        config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
+        config=types.GenerateContentConfig(
+            response_modalities=["IMAGE"],
+            image_config=types.ImageConfig(aspect_ratio=aspect),
+        ),
     )
 
     if not response.candidates:
@@ -142,11 +145,11 @@ def generate_image(client, model_name, prompt, reference_images, out_path: Path)
     raise RuntimeError("No image data found in the model response.")
 
 
-def generate_with_retries(client, model_name, prompt, reference_images, out_path, log_path):
+def generate_with_retries(client, model_name, prompt, reference_images, out_path, log_path, aspect="16:9"):
     attempt = 0
     while True:
         try:
-            generate_image(client, model_name, prompt, reference_images, out_path)
+            generate_image(client, model_name, prompt, reference_images, out_path, aspect=aspect)
             return True
         except Exception as exc:
             attempt += 1
@@ -268,7 +271,7 @@ def main():
             status = "dry-run"
         else:
             success = generate_with_retries(
-                client, model_name, prompt, reference_images, out_path, log_path
+                client, model_name, prompt, reference_images, out_path, log_path, aspect=args.aspect
             )
             if success:
                 status = "success"
