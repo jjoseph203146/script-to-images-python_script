@@ -233,6 +233,26 @@ def preserve_version(out_path: Path):
     out_path.rename(parent / f"{stem}.v{k}.png")
 
 
+def select_version(out_path: Path, version: int):
+    """Swap out_path's live content with its NNN_slug.vK.png sibling, so
+    an earlier reroll can be picked as the final frame without losing any
+    version. The version count and every other version's number stay the
+    same -- only the live file and slot K trade places."""
+    if not out_path.exists():
+        raise FileNotFoundError(f"{out_path.name} does not exist")
+    stem = out_path.stem
+    parent = out_path.parent
+    v_path = parent / f"{stem}.v{version}.png"
+    if not v_path.exists():
+        raise FileNotFoundError(f"{v_path.name} does not exist")
+
+    temp_path = parent / f"{stem}.__swap__.png"
+    out_path.rename(temp_path)
+    v_path.rename(out_path)
+    temp_path.rename(v_path)
+    return compute_versions_bytes(out_path)
+
+
 def run_pipeline(
     script_path,
     output_dir="output",

@@ -29,6 +29,7 @@ from generate_images import (
     load_reference_images,
     read_script_lines,
     run_pipeline,
+    select_version,
 )
 from segmentation import build_shot_plan, load_plan, save_plan, script_hash
 
@@ -396,6 +397,29 @@ def api_reroll(n):
     _settings = settings
     _job_queue.put({"type": "reroll", "n": n, "settings": settings})
     return jsonify({"ok": True})
+
+
+@app.route("/api/select/<int:n>", methods=["POST"])
+def api_select(n):
+    """Swap shot n's live frame with one of its saved versions, so an
+    earlier reroll can be kept as the final pick."""
+    payload = request.get_json(force=True, silent=True) or {}
+    version = payload.get("version")
+    if not isinstance(version, int) or version < 1:
+        return "version must be a positive integer", 400
+
+    rows = load_existing_shots(_output_dir() / "shots.csv")
+    row = rows.get(n)
+    if not row:
+        return "shot not found", 404
+
+    out_path = _output_dir() / row["filename"]
+    try:
+        versions, size_bytes = select_version(out_path, version)
+    except FileNotFoundError as exc:
+        return str(exc), 404
+
+    return jsonify({"versions": versions, "bytes": size_bytes})
 
 
 @app.route("/api/stream")

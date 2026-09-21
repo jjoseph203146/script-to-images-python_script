@@ -486,6 +486,7 @@ const API = {
   run:        '/api/run',
   stop:       '/api/stop',
   reroll:     n => `/api/reroll/${n}`,
+  select:     n => `/api/select/${n}`,
   stream:     '/api/stream',
   errors:     '/api/errors',
   zip:        '/api/download.zip',
@@ -821,6 +822,21 @@ async function reroll(n) {
   }
 }
 
+async function selectVersion(n, v) {
+  const sh = byN(n); if (!sh) return;
+  try {
+    const res = await jpost(API.select(n), { version: v });
+    sh.versions = res.versions || sh.versions;
+    sh.bytes = res.bytes;
+    sh.stamp = Date.now();
+    patchShot(sh);
+    if (state.viewerN === n) renderViewer();
+    toast(`v${v} is now the final frame for shot ${sh.nnn}`);
+  } catch (err) {
+    toast('Could not switch version: ' + err.message);
+  }
+}
+
 /* ---------------- grid ---------------- */
 function shotNode(s) {
   const el = document.createElement('div');
@@ -1023,7 +1039,9 @@ function renderViewer() {
       const cur = v === s.versions;
       const d = document.createElement('div');
       d.className = 'v' + (cur ? ' cur' : '');
+      d.title = cur ? 'Current — this is the version that downloads with the shot' : 'Click to make this the final version for this shot';
       d.innerHTML = `<div class="vf"><img src="${API.frame(cur ? s.file : s.file.replace(/\.png$/, `.v${v}.png`), s.stamp)}" alt="v${v}"></div><span>${cur ? 'current' : 'v' + v}</span>`;
+      if (!cur) d.addEventListener('click', () => selectVersion(s.n, v));
       vv.appendChild(d);
     }
   }
