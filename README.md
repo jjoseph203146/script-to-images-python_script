@@ -20,7 +20,7 @@ works for any script.
   heuristic prompt builder in `style_preset.py` is used instead, so the
   pipeline never breaks and there's a free, no-API-key way to preview shot
   structure.
-- Optionally feeds in reference images from a `references/` folder so
+- Optionally feeds in reference images from a `reference_photos/` folder so
   Gemini's image model stays consistent with your character design.
 - Generates one image per line with Google Gemini's **image** model
   (`gemini-2.5-flash-image` by default) and saves them as numbered PNGs in
@@ -54,7 +54,7 @@ works for any script.
    ```
 
 4. (Optional) Drop reference images (character sheets, style boards, etc.)
-   into `references/`. Any image files there are attached to every
+   into `reference_photos/`. Any image files there are attached to every
    generation call.
 
 ## Usage
@@ -69,7 +69,7 @@ python generate_images.py --script script.txt --output output
 |----------------|-----------------------------------------------------------------------|--------------|
 | `--script`     | Path to the narration script (required)                               | -            |
 | `--output`     | Output folder for images + `shots.csv`                                | `output`     |
-| `--references` | Folder with reference images                                          | `references` |
+| `--references` | Folder with reference images                                          | `reference_photos` |
 | `--start`      | First shot number to generate (1-indexed)                             | first line   |
 | `--end`        | Last shot number to generate (inclusive)                              | last line    |
 | `--model`      | `flash`, `pro`, or a raw Gemini image model id                        | `flash`      |

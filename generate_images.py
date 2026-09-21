@@ -186,7 +186,7 @@ def parse_args():
     )
     parser.add_argument("--script", required=True, help="Path to script.txt")
     parser.add_argument("--output", default="output", help="Output folder for images and shots.csv")
-    parser.add_argument("--references", default="references", help="Folder with reference images")
+    parser.add_argument("--references", default="reference_photos", help="Folder with reference images")
     parser.add_argument("--start", type=int, default=None, help="First shot number to generate (1-indexed)")
     parser.add_argument("--end", type=int, default=None, help="Last shot number to generate (inclusive)")
     parser.add_argument("--model", default="flash", help="'flash', 'pro', or a raw Gemini image model id")
