@@ -24,7 +24,11 @@ Create consistent 16:9 illustrated stills for a faceless tennis storytelling You
 
 CORE VISUAL IDENTITY
 
-Use a minimalist, polished flat 2D cartoon/vector illustration style.
+Use a soft, cel-shaded illustrated style: cartoon character design with
+gentle gradient shading and volume, set against detailed, atmospheric,
+semi-realistic environments (textured pavement, individual fence links,
+layered tree foliage, moody lighting). Not flat vector, not painterly in
+the fine-art sense, not photorealistic.
 
 The recurring main character must always use this design:
 - large perfectly white circular head
@@ -88,21 +92,20 @@ Every generated image must be:
 STYLE
 
 Visual style:
-- flat 2D illustration
-- clean geometric shapes
-- controlled detail
-- subtle cinematic depth
-- professional editorial/storyboard quality
-- not glossy
-- not hyper-detailed
-- not painterly
+- cartoon character (simple head/eyes/limbs, per CORE VISUAL IDENTITY) rendered with soft cel-shading and gentle gradients, not flat color fills
+- backgrounds and environments are illustrated with real texture and detail: cracked or worn pavement, individual chain-link fence links, layered tree foliage, crowd-filled stands, atmospheric depth
+- soft depth of field / gentle background blur is welcome to separate the character from the environment
+- warm, cinematic, often golden-hour or dusk lighting with visible glow from light sources (stadium floodlights, sunset) when the scene calls for it
+- professional storybook/editorial illustration quality
+- not glossy or plastic-looking
+- not painterly in the fine-art sense (no visible brushstrokes, no canvas texture)
 - not photorealistic
 - not obviously AI-generated
 
 Lighting:
-- natural or cinematic depending on the scene
+- natural or cinematic depending on the scene, with soft directional light and visible atmosphere (haze, glow, gradient skies) rather than flat even lighting
 - clear subject separation
-- avoid excessive glow, particles, dramatic fantasy effects, or neon unless specifically requested
+- avoid excessive particles, dramatic fantasy effects, or neon unless specifically requested
 
 Color:
 - realistic tennis environments
