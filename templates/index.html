@@ -279,6 +279,15 @@ button{font-family:inherit}
       </section>
 
       <section class="block">
+        <div class="block-hd"><span class="eyebrow">SHOT BREAKDOWN</span><span class="meta" id="segMeta">not segmented</span></div>
+        <span class="note">AI splits the script into shots, biased toward more shots than lines — one narration line can become several shots when it covers more than one visual beat. Review the list below, click a shot to edit its text (empty to delete), then Generate.</span>
+        <div class="script-foot" style="margin-top:10px">
+          <button class="pill" id="segmentBtn">Segment script</button>
+          <button class="pill ghost" id="segAddBtn">+ Add shot</button>
+        </div>
+      </section>
+
+      <section class="block">
         <div class="block-hd"><span class="eyebrow">REFERENCE PHOTOS</span><span class="meta" id="refMeta">0 attached</span></div>
         <div class="refs" id="refs">
           <div class="ref-add" id="refAdd" title="Add reference photos">+</div>
@@ -471,6 +480,7 @@ button{font-family:inherit}
 const API = {
   state:      '/api/state',
   script:     '/api/script',
+  segment:    '/api/segment',
   refs:       '/api/references',
   key:        '/api/session/key',
   run:        '/api/run',
@@ -499,7 +509,9 @@ const state = {
   filter: 'all',
   errors: '',
   keySet: false,
-  viewerN: null
+  viewerN: null,
+  segmented: false,     // true once /api/segment has produced the shot list currently in state.shots
+  segmenting: false
 };
 
 /* ---------------- helpers ---------------- */
@@ -528,17 +540,19 @@ function toast(msg, ms = 4200) {
 }
 
 async function jget(url) { const r = await fetch(url); if (!r.ok) throw new Error(await r.text()); return r.json(); }
-async function jpost(url, body) {
-  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+async function jpost(url, body, method = 'POST') {
+  const r = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
   if (!r.ok) throw new Error(await r.text());
   return r.status === 204 ? null : r.json();
 }
 
 /* ---------------- script ---------------- */
-function setScript(text, name) {
+function setScript(text, name, opts) {
+  opts = opts || {};
   state.scriptText = text;
   state.scriptName = name || state.scriptName || 'pasted';
-  const lines = parseScript(text);
+  state.segmented = !!opts.shots;
+  const lines = opts.shots || parseScript(text);
   // Rebuild shot list, preserving any status we already know for a line index.
   const prev = new Map(state.shots.map(s => [s.n, s]));
   state.shots = lines.map((line, i) => {
@@ -549,14 +563,73 @@ function setScript(text, name) {
     };
   });
   $('scriptArea').value = text;
-  $('scriptMeta').textContent = lines.length ? `${lines.length} shots` : 'no script';
+  const rawLineCount = parseScript(text).length;
+  $('scriptMeta').textContent = rawLineCount ? `${rawLineCount} lines` : 'no script';
   $('scriptName').textContent = state.scriptName;
-  const peek = lines.slice(0, 3).map(l => escapeHtml(l)).join('<br>');
-  $('scriptPeek').innerHTML = lines.length
-    ? peek + (lines.length > 3 ? `<br><span class="more">…${lines.length - 3} more lines</span>` : '')
+  const peek = parseScript(text).slice(0, 3).map(l => escapeHtml(l)).join('<br>');
+  $('scriptPeek').innerHTML = rawLineCount
+    ? peek + (rawLineCount > 3 ? `<br><span class="more">…${rawLineCount - 3} more lines</span>` : '')
     : '<span class="more">Paste your narration, or upload script.txt — one line per shot.</span>';
   $('fEnd').placeholder = lines.length ? String(lines.length) : 'last';
+  renderSegMeta();
   renderAll();
+}
+
+/* ---------------- segmentation ---------------- */
+function renderSegMeta() {
+  const el = $('segMeta');
+  if (state.segmenting) { el.textContent = 'segmenting…'; return; }
+  if (!state.scriptText.trim()) { el.textContent = 'not segmented'; return; }
+  el.textContent = state.segmented
+    ? `${state.shots.length} shots`
+    : `not segmented (${parseScript(state.scriptText).length} lines)`;
+}
+
+async function runSegment(force) {
+  if (!state.scriptText.trim()) return toast('Load a script first');
+  state.segmenting = true; renderSegMeta();
+  try {
+    const s = settings();
+    const needsKey = !s.rule_based;
+    if (needsKey && !state.keySet) { toast('Paste your GEMINI_API_KEY first, or check rule-based'); return; }
+    const res = await jpost(API.segment, { force: !!force, rule_based: s.rule_based, model: s.model, text_model: s.text_model });
+    setScript(state.scriptText, state.scriptName, { shots: res.shots });
+    toast(`Segmented into ${res.shots.length} shots`);
+  } catch (err) {
+    toast('Segmentation failed: ' + err.message);
+  } finally {
+    state.segmenting = false; renderSegMeta(); renderStatus();
+  }
+}
+$('segmentBtn').addEventListener('click', () => runSegment(state.segmented));
+
+$('segAddBtn').addEventListener('click', async () => {
+  const text = prompt('New shot text:', '');
+  if (text == null || !text.trim()) return;
+  const lines = state.shots.map(s => s.line);
+  lines.push(text.trim());
+  await persistShotEdits(lines, `Added shot ${lines.length}`);
+});
+
+async function persistShotEdits(lines, okMessage) {
+  try {
+    await jpost(API.segment, { shots: lines }, 'PUT');
+    setScript(state.scriptText, state.scriptName, { shots: lines });
+    if (okMessage) toast(okMessage);
+  } catch (err) {
+    toast('Could not save shot edits: ' + err.message);
+  }
+}
+
+function editShot(n) {
+  const sh = byN(n); if (!sh) return;
+  const text = prompt('Edit shot text (clear to delete):', sh.line);
+  if (text == null) return;
+  const lines = state.shots.map(s => s.line);
+  const i = state.shots.findIndex(s => s.n === n);
+  if (!text.trim()) lines.splice(i, 1);
+  else lines[i] = text.trim();
+  persistShotEdits(lines, text.trim() ? 'Shot updated' : 'Shot removed');
 }
 
 function escapeHtml(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
@@ -662,6 +735,7 @@ $('stopBtn').addEventListener('click', async () => {
 
 async function startRun() {
   if (!state.shots.length) return toast('Load a script first');
+  if (!state.segmented) return toast('Segment your script first, then Generate');
   const s = settings();
   const needsKey = !s.dry_run || !s.rule_based;
   if (needsKey && !state.keySet) return toast('Paste your GEMINI_API_KEY first');
@@ -763,8 +837,11 @@ function shotNode(s) {
       ${s.versions > 1 ? `<span class="vtag">v${s.versions}</span>` : ''}
     </div>
     <div class="cap">${escapeHtml(captionFor(s))}</div>`;
-  el.title = s.status === 'success' ? `${s.nnn} — ${s.line}\nClick to open, shift-click to reroll` : s.line;
+  el.title = s.status === 'success' ? `${s.nnn} — ${s.line}\nClick to open, shift-click to reroll`
+    : s.status === 'queued' ? `${s.nnn} — ${s.line}\nClick to edit this shot`
+    : s.line;
   el.querySelector('.frame').addEventListener('click', ev => {
+    if (s.status === 'queued' && !state.running) return editShot(s.n);
     if (s.status === 'queued' || s.status === 'running' || s.status === 'rerolling') return;
     if (ev.shiftKey || s.status === 'failed') reroll(s.n);
     else openViewer(s.n);
@@ -856,8 +933,9 @@ function renderStatus() {
   $('runBtn').hidden = state.running;
   $('stopBtn').hidden = !state.running;
   $('stopBtn').disabled = false;
-  $('runBtn').disabled = !s.length;
+  $('runBtn').disabled = !s.length || !state.segmented;
   $('runBtn').textContent = !s.length ? 'Generate'
+    : !state.segmented ? 'Segment script first'
     : cfg.dry_run ? `Dry run ${count} shot${count === 1 ? '' : 's'}`
     : `Generate ${count} shot${count === 1 ? '' : 's'}${count !== s.length ? ` (${start}–${end})` : ''}`;
 
@@ -988,9 +1066,14 @@ document.addEventListener('keydown', e => {
       if (st.settings.references) $('fRefs').value = st.settings.references;
     }
     renderRefs();
-    if (st.script) setScript(st.script.text, st.script.name);
+    if (st.script) {
+      const planShots = st.plan && st.plan.shots && st.plan.shots.length ? st.plan.shots : null;
+      setScript(st.script.text, st.script.name, planShots ? { shots: planShots } : undefined);
+    }
     if (st.shots && st.shots.length) {
-      // shots.csv is the source of truth — overlay its rows onto the script.
+      // shots.csv is the source of truth — overlay its rows onto the plan.
+      // Its presence also means segmentation already happened for this run.
+      state.segmented = true;
       st.shots.forEach(row => {
         const sh = byN(row.shot_number);
         if (!sh) return;
@@ -998,6 +1081,7 @@ document.addEventListener('keydown', e => {
         sh.file = row.filename; sh.status = row.status;
         sh.versions = row.versions || 1; sh.bytes = row.bytes;
       });
+      renderSegMeta();
     }
     state.running = !!st.running;
     if (state.running) openStream();

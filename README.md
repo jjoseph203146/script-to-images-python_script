@@ -8,9 +8,18 @@ works for any script.
 ## What it does
 
 - Reads `script.txt`, one narration line per line (blank lines are skipped).
-- For each line, a Gemini **text** model (`gemini-2.5-flash` by default)
-  reads the full channel style guide plus the whole script, the narration
-  line, and the last few prompts already generated, and writes a single
+- **Segments the script into shots** with one LLM call over the whole
+  script (`segmentation.py`), biased toward *more* shots than lines: a line
+  that covers several distinct visual beats gets split into several shots,
+  and adjacent fragments are only merged when they're truly one moment.
+  This is what actually drives the shot count -- it's not 1 image per line.
+  The result is cached to `output/shots_plan.json` (keyed by a hash of the
+  script text) so re-runs and `--start`/`--end` partial runs keep the same
+  shot numbering instead of re-cutting the script every time. Pass
+  `--resegment` to force a fresh cut.
+- For each shot, a Gemini **text** model (`gemini-3.6-flash` by default)
+  reads the full channel style guide plus the whole script, the shot's
+  text, and the last few prompts already generated, and writes a single
   ~75-150 word image prompt for that shot: it picks the strongest visual
   idea, the character count, the location, the camera angle, and the
   progression stage (beginner/competitive/elite), and avoids repeating
@@ -76,7 +85,8 @@ python generate_images.py --script script.txt --output output
 | `--text-model` | Gemini text model used to write prompts (defaults to match `--model`) | `gemini-2.5-flash` |
 | `--aspect`     | Aspect ratio hint passed to the prompt writer                         | `16:9`       |
 | `--dry-run`    | Skip image generation; still writes real prompts to `shots.csv`       | off          |
-| `--rule-based` | Skip the LLM prompt writer; use the offline heuristic builder instead | off          |
+| `--rule-based` | Skip AI segmentation and the LLM prompt writer; one shot per line, offline heuristic prompts | off |
+| `--resegment`  | Ignore any cached `output/shots_plan.json` and re-cut the script into shots (shot numbers may change) | off |
 
 `--dry-run` still calls the (cheap) text model by default, since the point
 is to preview the *real* prompts before spending image-generation credits.
@@ -127,9 +137,11 @@ LLM path does.
 
 ## Notes
 
-- Shot numbers are assigned sequentially over non-empty lines in the whole
-  script, so `--start`/`--end` reference the same numbering as a full run,
-  and re-running a partial range only updates those rows in `shots.csv`.
+- Shot numbers are assigned sequentially over the segmented shot list (see
+  above), not raw script lines, so `--start`/`--end` reference the same
+  numbering as a full run as long as `output/shots_plan.json` is still
+  cached for that script; re-running a partial range only updates those
+  rows in `shots.csv`.
 - Filenames are sanitized (lowercased, alphanumeric + underscores only,
   truncated) so they're always safe to use.
 - Re-running a shot whose previous status was `failed` tells the prompt

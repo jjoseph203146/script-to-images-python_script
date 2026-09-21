@@ -21,13 +21,16 @@ from flask import Flask, Response, jsonify, request, send_file, send_from_direct
 from werkzeug.utils import secure_filename
 
 from generate_images import (
+    TEXT_MODEL_MAP,
     MissingAPIKeyError,
+    build_client,
     compute_versions_bytes,
     load_existing_shots,
     load_reference_images,
     read_script_lines,
     run_pipeline,
 )
+from segmentation import build_shot_plan, load_plan, save_plan, script_hash
 
 try:
     from dotenv import load_dotenv
@@ -204,7 +207,16 @@ def api_state():
         "script": {"name": name, "text": text},
         "references": references,
         "shots": shots,
+        "plan": _plan_for_current_script(text),
     })
+
+
+def _plan_for_current_script(text):
+    """The cached segmentation plan, if it matches the current script text."""
+    plan = load_plan(_output_dir())
+    if plan and plan.get("script_hash") == script_hash(text) and plan.get("shots"):
+        return {"shots": plan["shots"]}
+    return None
 
 
 def _list_references():
@@ -241,6 +253,49 @@ def api_script_post():
     SCRIPT_PATH.write_text(text, encoding="utf-8")
     lines = read_script_lines(SCRIPT_PATH)
     return jsonify({"lines": len(lines)})
+
+
+@app.route("/api/segment", methods=["POST", "PUT"])
+def api_segment():
+    """POST: (re-)run the LLM segmentation pass, biased toward more shots
+    than lines. PUT: save a user-edited shot list directly, no LLM call."""
+    _, text = _script_name_and_text()
+    if not text.strip():
+        return "no script loaded", 400
+
+    if request.method == "PUT":
+        data = request.get_json(force=True, silent=True) or {}
+        shots = [s.strip() for s in data.get("shots", []) if s and s.strip()]
+        if not shots:
+            return "shots list is empty", 400
+        save_plan(_output_dir(), text, shots)
+        return jsonify({"shots": shots})
+
+    data = request.get_json(force=True, silent=True) or {}
+    force = bool(data.get("force"))
+    rule_based = bool(data.get("rule_based"))
+    model = data.get("model") or _settings.get("model") or "flash"
+    text_model = data.get("text_model") or TEXT_MODEL_MAP.get(model, "gemini-3.6-flash")
+
+    if rule_based:
+        client = None
+    elif _session_key is None:
+        return "GEMINI_API_KEY required to segment with AI (or pass rule_based)", 400
+    else:
+        try:
+            client = build_client(_session_key)
+        except MissingAPIKeyError as exc:
+            return str(exc), 400
+
+    try:
+        shots = build_shot_plan(
+            text, _output_dir(), client=client, text_model=text_model,
+            force_resegment=force,
+        )
+    except Exception as exc:
+        return f"segmentation failed: {exc}", 502
+
+    return jsonify({"shots": shots})
 
 
 @app.route("/api/references", methods=["GET", "POST"])

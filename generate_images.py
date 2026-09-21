@@ -21,6 +21,7 @@ from pathlib import Path
 
 from style_preset import build_prompt_fallback, sanitize_filename
 from prompt_llm import build_prompt_llm
+from segmentation import build_shot_plan
 
 try:
     from dotenv import load_dotenv
@@ -243,6 +244,7 @@ def run_pipeline(
     keep_versions=True,
     on_event=None,
     should_stop=None,
+    force_resegment=False,
 ):
     """Run the full script_to_images pipeline. Used by both the CLI
     (main()) and the web UI (app.py), so every behavior here is shared."""
@@ -265,7 +267,25 @@ def run_pipeline(
     model_name = MODEL_MAP.get(model, model)
     text_model_name = text_model or TEXT_MODEL_MAP.get(model, "gemini-3.6-flash")
 
-    all_shots = read_script_lines(script_path)
+    # A client is needed for image generation (unless dry_run), for the
+    # LLM prompt writer (unless rule_based), and for shot segmentation
+    # (unless rule_based) -- even during a dry run, since dry-run previews
+    # the real segmentation and prompts.
+    need_client = (not dry_run) or (not rule_based)
+    client = build_client(api_key) if need_client else None
+
+    script_text = script_path.read_text(encoding="utf-8")
+    if script_text.strip():
+        shot_texts = build_shot_plan(
+            script_text, output_dir,
+            client=None if rule_based else client,
+            text_model=text_model_name,
+            force_resegment=force_resegment,
+        )
+    else:
+        shot_texts = []
+    all_shots = list(enumerate(shot_texts, start=1))
+
     start_resolved = start or 1
     end_resolved = end or (all_shots[-1][0] if all_shots else 0)
     selected_shots = [(n, line) for n, line in all_shots if start_resolved <= n <= end_resolved]
@@ -282,11 +302,6 @@ def run_pipeline(
     reference_images = load_reference_images(references_path)
     if reference_images:
         print(f"Using {len(reference_images)} reference image(s) from {references_path}/")
-
-    # A client is needed for image generation (unless dry_run) and for the
-    # LLM prompt writer (unless rule_based), even during a dry run.
-    need_client = (not dry_run) or (not rule_based)
-    client = build_client(api_key) if need_client else None
 
     existing_rows = load_existing_shots(csv_path)
 
@@ -389,8 +404,14 @@ def parse_args():
     parser.add_argument("--dry-run", action="store_true", help="Print prompts without generating images")
     parser.add_argument(
         "--rule-based", action="store_true",
-        help="Skip the LLM prompt writer and use the offline heuristic prompt builder "
+        help="Skip the LLM prompt writer and shot segmentation, using one shot per "
+             "non-empty line and the offline heuristic prompt builder "
              "(no API calls at all in combination with --dry-run)",
+    )
+    parser.add_argument(
+        "--resegment", action="store_true",
+        help="Ignore any cached output/shots_plan.json and re-run shot segmentation "
+             "(shot numbers may change)",
     )
     return parser.parse_args()
 
@@ -402,6 +423,7 @@ def main():
             Path(args.script), args.output, args.references,
             args.start, args.end, args.model, args.text_model, args.aspect,
             args.dry_run, args.rule_based,
+            force_resegment=args.resegment,
         )
     except (FileNotFoundError, MissingAPIKeyError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
