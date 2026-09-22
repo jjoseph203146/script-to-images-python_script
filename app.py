@@ -26,6 +26,7 @@ from generate_images import (
     build_client,
     compute_versions_bytes,
     load_existing_shots,
+    log_error,
     load_reference_images,
     read_script_lines,
     run_pipeline,
@@ -169,6 +170,10 @@ def _reroll_job(job):
 
 def _fail_job(settings, exc):
     global _running
+    try:
+        log_error(Path(settings["output"]) / "errors.log", f"worker: {exc}")
+    except Exception:
+        pass
     _broadcast("log", {"line": f"[worker] {exc}"})
     _broadcast("run_done", {"success": 0, "failed": 0, "dry_run": 0, "stopped": True})
     with _state_lock:

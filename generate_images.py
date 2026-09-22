@@ -348,42 +348,53 @@ def run_pipeline(
 
         emit("shot_start", {"shot_number": shot_number, "narration_line": line})
 
-        retry_hint = existing_rows.get(shot_number, {}).get("status") == "failed"
-
-        if rule_based:
-            prompt, prompt_source = build_prompt_fallback(line, aspect=aspect, shot_number=shot_number), "rule-based"
-        else:
-            prompt, prompt_source = build_prompt_with_retries(
-                client, text_model_name, line, shot_number, len(all_shots), all_shots,
-                recent_prompts, aspect, retry_hint, log_path, on_event,
-            )
-        recent_prompts.append(prompt)
-        emit("shot_prompt", {"shot_number": shot_number, "prompt": prompt, "source": prompt_source})
-
         filename = f"{shot_number:03d}_{sanitize_filename(line)}.png"
         out_path = output_dir / filename
+        prompt = ""
 
-        print(f"[{i}/{total}] shot {shot_number:03d}: {line}")
+        try:
+            retry_hint = existing_rows.get(shot_number, {}).get("status") == "failed"
 
-        if dry_run:
-            print(f"  prompt ({len(prompt.split())} words): {prompt}")
-            status = "dry-run"
-            dry_run_count += 1
-        else:
-            if keep_versions:
-                preserve_version(out_path)
-            success = generate_with_retries(
-                client, model_name, prompt, reference_images, out_path, log_path,
-                aspect=aspect, on_event=on_event, shot_number=shot_number,
-            )
-            if success:
-                status = "success"
-                success_count += 1
-                print(f"  saved -> {out_path}")
+            if rule_based:
+                prompt, prompt_source = build_prompt_fallback(line, aspect=aspect, shot_number=shot_number), "rule-based"
             else:
-                status = "failed"
-                failed_count += 1
-                print(f"  FAILED (see {log_path})")
+                prompt, prompt_source = build_prompt_with_retries(
+                    client, text_model_name, line, shot_number, len(all_shots), all_shots,
+                    recent_prompts, aspect, retry_hint, log_path, on_event,
+                )
+            recent_prompts.append(prompt)
+            emit("shot_prompt", {"shot_number": shot_number, "prompt": prompt, "source": prompt_source})
+
+            print(f"[{i}/{total}] shot {shot_number:03d}: {line}")
+
+            if dry_run:
+                print(f"  prompt ({len(prompt.split())} words): {prompt}")
+                status = "dry-run"
+                dry_run_count += 1
+            else:
+                if keep_versions:
+                    preserve_version(out_path)
+                success = generate_with_retries(
+                    client, model_name, prompt, reference_images, out_path, log_path,
+                    aspect=aspect, on_event=on_event, shot_number=shot_number,
+                )
+                if success:
+                    status = "success"
+                    success_count += 1
+                    print(f"  saved -> {out_path}")
+                else:
+                    status = "failed"
+                    failed_count += 1
+                    print(f"  FAILED (see {log_path})")
+        except Exception as exc:
+            # A single shot's unexpected failure (a locked file, a network
+            # blip that isn't caught inside generate_with_retries, etc.)
+            # should not take down the whole run -- log it, mark this shot
+            # failed, and move on to the next one.
+            log_error(log_path, f"shot {shot_number:03d}: unexpected error: {exc}", on_event)
+            status = "failed"
+            failed_count += 1
+            print(f"  FAILED (unexpected error, see {log_path})")
 
         existing_rows[shot_number] = {
             "shot_number": shot_number,
