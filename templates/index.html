@@ -333,6 +333,7 @@ button{font-family:inherit}
 
       <div class="rail-foot">
         <button class="btn btn-primary" id="runBtn" disabled>Generate</button>
+        <button class="btn ghost" id="resumeBtn" hidden>Resume from shot —</button>
         <button class="btn btn-danger" id="stopBtn" hidden>Stop after current shot</button>
         <span class="note-mono" style="text-align:center">shots.csv is rewritten when the run ends</span>
       </div>
@@ -727,8 +728,22 @@ function selectedRange() {
   return { start, end, count: Math.max(0, end - start + 1) };
 }
 
+// Lowest shot number that hasn't finished (no status, or a failed retry) --
+// null if every shot is success/dry-run, i.e. nothing to resume.
+function firstIncompleteShot() {
+  const sh = state.shots.find(s => s.status !== 'success' && s.status !== 'dry-run');
+  return sh ? sh.n : null;
+}
+
 /* ---------------- run ---------------- */
 $('runBtn').addEventListener('click', startRun);
+$('resumeBtn').addEventListener('click', () => {
+  const n = firstIncompleteShot();
+  if (n == null) return;
+  $('fStart').value = n;
+  $('fEnd').value = '';
+  startRun();
+});
 $('stopBtn').addEventListener('click', async () => {
   $('stopBtn').disabled = true;
   try { await jpost(API.stop); toast('Stopping after the current shot'); } catch (err) { toast(err.message); }
@@ -954,6 +969,15 @@ function renderStatus() {
     : !state.segmented ? 'Segment script first'
     : cfg.dry_run ? `Dry run ${count} shot${count === 1 ? '' : 's'}`
     : `Generate ${count} shot${count === 1 ? '' : 's'}${count !== s.length ? ` (${start}–${end})` : ''}`;
+
+  const resumeN = firstIncompleteShot();
+  const hasProgress = s.some(x => x.status === 'success' || x.status === 'dry-run');
+  const showResume = !state.running && state.segmented && resumeN != null && hasProgress;
+  $('resumeBtn').hidden = !showResume;
+  if (showResume) {
+    const left = s.filter(x => x.n >= resumeN && x.status !== 'success' && x.status !== 'dry-run').length;
+    $('resumeBtn').textContent = `Resume from shot ${nnn(resumeN)} (${left} left)`;
+  }
 
   const onDisk = success + dry;
   $('diskMeta').textContent = onDisk ? `${success} PNGs + shots.csv on disk` : 'nothing on disk';
