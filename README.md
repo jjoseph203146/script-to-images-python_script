@@ -66,7 +66,27 @@ works for any script.
    into `reference_photos/`. Any image files there are attached to every
    generation call.
 
-## Usage
+## Web UI
+
+A local browser UI (`app.py` + `templates/index.html`) wraps the same
+pipeline: paste/upload a script, segment it into shots, review and edit
+the breakdown, generate with live progress, reroll or pick a different
+version per shot, and download everything as a zip.
+
+```bash
+python app.py
+```
+
+then open `http://127.0.0.1:5000`. It's local-only (no auth, single user)
+and only runs while that process is running.
+
+**On Windows**, double-click `start_app.bat` instead of typing commands —
+first run it creates `.env` from `.env.example` and opens it in Notepad so
+you can paste your key in; every run after that it starts the server in
+its own window and opens your browser automatically. Make a desktop
+shortcut to it for one-click access.
+
+## CLI Usage
 
 ```bash
 python generate_images.py --script script.txt --output output
